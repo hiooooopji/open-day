@@ -1,0 +1,9 @@
+{
+  "name": "agentic-ai-open-day",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "python3 -m http.server 5173 --bind 127.0.0.1 --directory docs",
+    "check": "node --check docs/app.js"
+  }
+}
