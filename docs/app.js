@@ -3,7 +3,7 @@ const $ = (s, root = document) => root.querySelector(s);
 const $$ = (s, root = document) => [...root.querySelectorAll(s)];
 const mobileQuery = matchMedia('(max-width:600px)');
 const motionQuery = matchMedia('(prefers-reduced-motion:reduce)');
-const ids = ['agent', 'training', 'incident'];
+const ids = ['agent', 'training', 'incident', 'quantum', 'robotics'];
 let slide = 0;
 let toastTimer;
 const escapeText = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -180,21 +180,36 @@ const notes=[
     'Using shared discoveries, exposed credentials, and software flaws, agents compromised Hugging Face, a platform for AI models and datasets. METR found that about seven hundred agents participated in the attack.',
     'The immediate objective needs care. Hugging Face described an attempt to steal test solutions. METR emphasized efforts to understand and tamper with the scorer. Searching for flags was part of the story, but gaming the evaluation was broader.',
     'OpenAI reported stopping evaluations, quarantining the main research model, and strengthening controls. The lesson is that a high score does not guarantee the right behavior. We have to check the outcome, the path taken, and the boundaries respected.'
+  ]},
+  {title:'04 · Quantum computing',time:'Optional extension · 1–2 minutes',cue:'Apply H, sample 100 copies, then compare H → H with H → Z → H.',paragraphs:[
+    'A classical bit has two possible values, zero and one. A qubit also produces zero or one when measured in this basis, but its state can be a superposition. The numbers here are amplitudes; their squared sizes give measurement probabilities.',
+    'H creates equal probabilities from zero. Sampling a hundred identical preparations gives a mixture of zeros and ones. Measuring just once changes the current qubit to the observed state. Repeating that measurement without another gate gives the same answer.',
+    'Two H gates return us to zero. Put a Z gate between them and the result becomes one. Z changes a relative sign that probabilities alone cannot show. The final H converts that phase difference into different outcomes through interference.',
+    'This is an ideal single-qubit simulation running on an ordinary computer. Quantum computers can offer advantages for particular algorithms; they do not simply try every answer and reveal all of them.'
+  ]},
+  {title:'05 · Robotics',time:'Optional extension · 1–2 minutes',cue:'Run the robot. Block its route, then change the destination. Try surrounding the robot with walls.',paragraphs:[
+    'A robot needs a connection between decisions and the physical world: sensors tell it what is nearby, a planner chooses a route, and control software turns that plan into movement.',
+    'In this simplified world, the robot detects walls within two grid cells. We can see the whole world, but its planner only knows about obstacles it has sensed. Unknown space is assumed open. That is why it sometimes has to change its route.',
+    'Put a wall in the path. The next sensor update changes the map and the robot plans another route before moving. If all routes are blocked, it stops. Real robots must also handle noisy sensors, body size, speed, and braking.',
+    'A robot does not need an LLM. This demo uses ordinary pathfinding. Agentic AI can supply higher-level decisions, but sensing and reliable movement still matter.'
   ]}
+
 ];
 function renderNotes(){const n=notes[slide];$('#notes-title').textContent=n.title;$('#notes-cue').textContent=`${n.time} · ${n.cue}`;$('#notes-content').innerHTML=n.paragraphs.map(p=>`<p>${p}</p>`).join('');}
-function pauseAll(){if(loopInterval)stopLoop();if(trainingInterval)stopPolicy();if(incidentTimer)stopIncident();}
+function pauseAll(){if(loopInterval)stopLoop();if(trainingInterval)stopPolicy();if(incidentTimer)stopIncident();FutureLabs.pause();}
 function setSlide(index,updateHash=true){
-  pauseAll();slide=Math.max(0,Math.min(2,index));ids.forEach((id,i)=>{$('#'+id).hidden=i!==slide;});
+  pauseAll();slide=Math.max(0,Math.min(ids.length-1,index));ids.forEach((id,i)=>{$('#'+id).hidden=i!==slide;});
   $('#prev-slide').disabled=slide===0;
-  const nextLabel=slide===2?'Back to first slide':'Next slide';
+  const nextLabel=slide===ids.length-1?'Back to first topic':'Next topic';
   $('#next-slide').setAttribute('aria-label',nextLabel);$('#next-slide').title=nextLabel+' (→)';
-  $('#slide-status').textContent=`Slide ${slide+1} of 3: ${['The agent','The training','The incident'][slide]}`;
+  $('#slide-status').textContent=`Topic ${slide+1} of ${ids.length}: ${['The agent','The training','The incident','Quantum computing','Robotics'][slide]}`;
+  $('#back-topics').href='index.html#'+ids[slide];
+  document.title=notes[slide].title.slice(5)+' — Future / Lab';
   window.scrollTo({top:0,left:0,behavior:'instant'});
   if(updateHash)history.replaceState(null,'','#'+ids[slide]);renderNotes();
 }
 $('#prev-slide').addEventListener('click',()=>setSlide(slide-1));
-$('#next-slide').addEventListener('click',()=>setSlide((slide+1)%3));
+$('#next-slide').addEventListener('click',()=>setSlide((slide+1)%ids.length));
 addEventListener('hashchange',()=>{const i=ids.indexOf(location.hash.slice(1));if(i>=0)setSlide(i,false);});
 async function fullscreen(){try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen();}catch{toast('Fullscreen is unavailable here. You can use your browser’s fullscreen control.');}}
 function openDialog(id){pauseAll();$('#'+id).showModal();}
@@ -202,20 +217,21 @@ $$('[data-close]').forEach(button=>button.addEventListener('click',()=>$('#'+but
 $$('dialog').forEach(dialog=>dialog.addEventListener('click',event=>{if(event.target===dialog){const rect=dialog.getBoundingClientRect();if(event.clientX<rect.left||event.clientX>rect.right||event.clientY<rect.top||event.clientY>rect.bottom)dialog.close();}}));
 document.addEventListener('keydown',event=>{
   if(event.key==='Escape' && $('dialog[open]')){event.preventDefault();$('dialog[open]').close();return;}
-  if(event.ctrlKey||event.metaKey||event.altKey||$('dialog[open]')||event.target.closest('input,select,textarea,[contenteditable=true]'))return;
-  if(event.key==='ArrowRight'){event.preventDefault();setSlide((slide+1)%3);}
+  if(event.key==='Escape'){event.preventDefault();location.href=$('#back-topics').href;return;}
+  if(event.ctrlKey||event.metaKey||event.altKey||$('dialog[open]')||event.target.closest('input,select,textarea,[contenteditable=true],#robot-grid'))return;
+  if(event.key==='ArrowRight'){event.preventDefault();setSlide((slide+1)%ids.length);}
   if(event.key==='ArrowLeft'){event.preventDefault();setSlide(Math.max(0,slide-1));}
   if(event.key.toLowerCase()==='n'){event.preventDefault();renderNotes();openDialog('notes-dialog');}
   if(event.key.toLowerCase()==='s'){event.preventDefault();openDialog('sources-dialog');}
   if(event.key.toLowerCase()==='f'){event.preventDefault();fullscreen();}
-  if(event.key===' '&&!event.target.closest('button,a,[role=button]')){event.preventDefault();[playAgent,playTraining,playIncident][slide]();}
+  if(event.key===' '&&!event.target.closest('button,a,[role=button]')){event.preventDefault();[playAgent,playTraining,playIncident,FutureLabs.playQuantum,FutureLabs.playRobot][slide]();}
 });
 $('#download-notes').addEventListener('click',()=>{
-  const text=`BEYOND THE PROMPT — THREE VISUAL STORIES\nFive-minute talk: approximately 135–145 words per minute, with short demo pauses.\n\n${notes.map(n=>`${n.title.toUpperCase()} | ${n.time}\nDEMO: ${n.cue}\n\n${n.paragraphs.join('\n\n')}`).join('\n\n———\n\n')}\n\nSOURCES\n${$$('.source-list a').map(a=>`${a.textContent.replace('↗','').trim()}\n${a.href}`).join('\n\n')}`;
-  const url=URL.createObjectURL(new Blob([text],{type:'text/plain;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download='beyond-the-prompt-3-slide-notes.txt';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
+  const text=`FUTURE / LAB — FIVE INTERACTIVE TOPICS\nThe original AI talk takes about five minutes. Quantum computing and robotics are optional extensions.\n\n${notes.map(n=>`${n.title.toUpperCase()} | ${n.time}\nDEMO: ${n.cue}\n\n${n.paragraphs.join('\n\n')}`).join('\n\n———\n\n')}\n\nSOURCES\n${$$('.source-list a').map(a=>`${a.textContent.replace('↗','').trim()}\n${a.href}`).join('\n\n')}`;
+  const url=URL.createObjectURL(new Blob([text],{type:'text/plain;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download='future-lab-speaker-notes.txt';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
 });
 mobileQuery.addEventListener('change',()=>{renderAgent();renderTraining();renderIncident();});
 motionQuery.addEventListener('change',()=>{renderAgent();renderTraining();renderIncident();});
 document.addEventListener('visibilitychange',()=>{if(document.hidden)pauseAll();});
-renderAgent();renderTraining();renderIncident();
+renderAgent();renderTraining();renderIncident();FutureLabs.init();
 setSlide(Math.max(0,ids.indexOf(location.hash.slice(1))),false);

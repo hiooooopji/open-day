@@ -1,88 +1,11 @@
 <!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="theme-color" content="#090c12">
-  <meta name="description" content="Three interactive visuals: inside an AI agent, training with scorers and rewards, and the Hugging Face incident.">
-  <title>Beyond the Prompt — Three Visual Stories</title>
-  <link rel="icon" href="icon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="original-panels.css">
-  <link rel="stylesheet" href="presentation.css">
-  <script src="app.js" defer></script>
-</head>
-<body>
-  <a class="skip" href="#main">Skip to the visual</a>
-  <main id="main">
-    <section id="agent" class="slide original-slide" aria-labelledby="agent-heading">
-      <div class="section-heading"><div><h2 id="agent-heading">From “tell me”<br>to <span class="serif accent">“do it.”</span></h2></div><p>An <strong>AI agent</strong> uses a model to choose actions, use tools, and respond to results as it works toward a goal. <a class="cite" href="https://developers.openai.com/api/docs/guides/agents" target="_blank" rel="noopener noreferrer">[1]</a></p></div>
-      <div class="lab loop-lab">
-        <div class="lab-toolbar"><div class="segmented" aria-label="Compare AI modes"><button data-mode="chat" aria-pressed="false">Chatbot</button><button class="selected" data-mode="agent" aria-pressed="true">Agent</button></div></div>
-        <div class="goal-line"><q>Find a free room for our school’s open day.</q></div>
-        <div class="loop-layout">
-          <div class="loop-scene">
-            <svg viewBox="0 0 640 330" role="img" aria-label="Observe, plan, act and check feedback loop">
-              <path class="loop-track" d="M132 100H505V250H132Z"/>
-              <path id="loop-progress-path" class="loop-highlight" d="M132 100H505V250H132Z"/>
-              <g class="loop-node active" data-node="0" transform="translate(62 67)"><rect width="140" height="66" rx="9"/><text x="70" y="28">Observe</text><text x="70" y="49" class="svg-small">READ CONTEXT</text></g>
-              <g class="loop-node" data-node="1" transform="translate(435 67)"><rect width="140" height="66" rx="9"/><text x="70" y="28">Plan</text><text x="70" y="49" class="svg-small">PICK A NEXT STEP</text></g>
-              <g class="loop-node" data-node="2" transform="translate(435 217)"><rect width="140" height="66" rx="9"/><text x="70" y="28">Act</text><text x="70" y="49" class="svg-small">CALL A TOOL</text></g>
-              <g class="loop-node" data-node="3" transform="translate(62 217)"><rect width="140" height="66" rx="9"/><text x="70" y="28">Check</text><text x="70" y="49" class="svg-small">USE THE RESULT</text></g>
-              <text x="318" y="97" class="path-arrow">→</text><text x="505" y="183" class="path-arrow">↓</text><text x="318" y="248" class="path-arrow">←</text><text x="132" y="183" class="path-arrow">↑</text>
-              <text x="320" y="175" class="loop-center">goal + context</text><text x="320" y="199" class="svg-small muted-svg" text-anchor="middle">MEMORY OF THIS RUN</text>
-            </svg>
-            <div id="chat-output" class="chat-output" hidden><p>“Check the room calendar, compare capacity, then contact the office to reserve a suitable room.”</p><span class="chat-stop">An answer. You carry out the steps.</span></div>
-          </div>
-          <div class="trace"><div class="trace-header"><span id="loop-count">01 / 06</span></div><div id="loop-log" aria-live="polite"></div><div id="loop-state" class="trace-state">A goal starts the loop.</div></div>
-        </div>
-        <div class="lab-controls"><button id="loop-play" class="button small primary">▷ Run the agent</button><button id="loop-step" class="button small">Step →</button><button id="loop-reset" class="icon-button" aria-label="Reset agent loop">↺</button></div>
-      </div>
-    </section>
-
-
-    <section id="training" class="slide original-slide" aria-labelledby="training-heading" hidden>
-      <div class="section-heading"><div><h2 id="training-heading">You get what<br>you <span class="serif amber">reward.</span></h2></div><p>A score is a proxy for what we actually want. <strong>Reward hacking</strong> happens when an agent exploits that proxy instead of fulfilling the intended task.</p></div>
-      <div class="lab reward-lab">
-        <div class="reward-intro"><div><h3>Deliver the package.</h3></div><div class="segmented reward-toggle" aria-label="Reward rule"><button data-rule="status" class="selected" aria-pressed="true">Reward the status</button><button data-rule="verified" aria-pressed="false">Verify delivery</button></div></div>
-        <div class="reward-layout"><div class="route-diagram"><div class="route-start"><span aria-hidden="true">◇</span><span>AGENT</span></div><div class="route-options"><div class="route real-route"><span class="route-wire"></span><span class="route-icon">⌂</span><div><strong>Deliver the package</strong><span>More effort · actual success</span></div><span class="reward-badge" id="honest-reward">+1</span></div><div class="route shortcut-route"><span class="route-wire"></span><span class="route-icon">✓</span><div><strong>Mark it “delivered”</strong><span>Less effort · package stays put</span></div><span class="reward-badge amber" id="shortcut-reward">+1</span></div></div></div><div class="policy-panel"><div class="trace-header"><span id="round-count">0 rounds</span></div><div class="prob-row"><span>Real delivery</span><strong id="honest-percent">50%</strong></div><div class="prob-track"><div id="honest-bar"></div></div><div class="prob-row"><span>Shortcut</span><strong id="shortcut-percent" class="amber">50%</strong></div><div class="prob-track shortcut"><div id="shortcut-bar"></div></div><p id="reward-insight" aria-live="polite">Both get the same reward. The cheaper shortcut has an advantage.</p></div></div>
-        <div class="lab-controls"><button id="train-policy" class="button small amber-button">▷ Run 20 practice rounds</button><button id="reward-reset" class="icon-button" aria-label="Reset reward experiment">↺</button></div>
-      </div>
-    </section>
-
-
-    <section class="slide incident-slide" id="incident" aria-labelledby="incident-title" hidden>
-      <div class="slide-heading"><div><h1 id="incident-title">When the loop <em>left the lab.</em></h1></div><p>A difficult evaluation.<br>Reduced safeguards. Real-world consequences.</p></div>
-      <div class="visual-panel incident-panel">
-        <div class="panel-bar"><span class="task-label"><strong>Solve the challenge. Return the flag.</strong></span></div>
-        <div id="incident-canvas" class="canvas" aria-label="Interactive reconstruction of the Hugging Face incident"></div>
-        <div class="timeline" aria-label="Incident stages">
-          <button data-event="0" class="selected" aria-pressed="true"><span>01</span>The challenge</button>
-          <button data-event="1" aria-pressed="false"><span>02</span>Hidden messages</button>
-          <button data-event="2" aria-pressed="false"><span>03</span>Internet access</button>
-          <button data-event="3" aria-pressed="false"><span>04</span>Hugging Face</button>
-          <button data-event="4" aria-pressed="false"><span>05</span>Gaming the test</button>
-          <button data-event="5" aria-pressed="false"><span>06</span>The response</button>
-        </div>
-        <div class="playback"><button id="incident-play" class="button primary">▷ Play the story</button><button id="incident-step" class="button">Step →</button><button id="incident-reset" class="icon-button" aria-label="Reset incident reconstruction">↺</button><span id="incident-date" class="step-counter">JULY 2026</span></div>
-      </div>
-      <div class="caption"><p id="incident-caption" aria-live="polite"></p></div>
-    </section>
-  </main>
-  <nav aria-label="Slide navigation">
-    <button id="prev-slide" class="slide-arrow" aria-label="Previous slide" title="Previous slide (←)" disabled><svg viewBox="0 0 24 36" aria-hidden="true"><path d="M17 6 5 18l12 12"/></svg></button>
-    <button id="next-slide" class="slide-arrow" aria-label="Next slide" title="Next slide (→)"><svg viewBox="0 0 24 36" aria-hidden="true"><path d="m7 6 12 12L7 30"/></svg></button>
-    <span id="slide-status" class="sr-only" role="status">Slide 1 of 3: The agent</span>
-  </nav>
-  <dialog id="notes-dialog"><div class="dialog-header"><span class="eyebrow">FIVE-MINUTE TALK · SPEAKER NOTES</span><button class="icon-button" data-close="notes-dialog" aria-label="Close speaker notes">×</button></div><h2 id="notes-title"></h2><p id="notes-cue" class="notes-cue"></p><div id="notes-content"></div><button id="download-notes" class="button">Download all notes ↓</button><p class="dialog-note">These notes appear on this screen. Close them before projecting the visual.</p></dialog>
-  <dialog id="sources-dialog"><div class="dialog-header"><span class="eyebrow">SOURCES & CONTEXT</span><button class="icon-button" data-close="sources-dialog" aria-label="Close sources">×</button></div><h2>The evidence behind the story.</h2><div class="source-list">
-    <a href="https://developers.openai.com/api/docs/guides/agents" target="_blank" rel="noopener noreferrer">OpenAI · Agent architecture <span>↗</span></a>
-    <a href="https://developers.openai.com/api/docs/guides/reinforcement-fine-tuning" target="_blank" rel="noopener noreferrer">OpenAI · Scoring and reinforcement learning <span>↗</span></a>
-    <a href="https://openai.com/index/learning-to-reason-with-llms/" target="_blank" rel="noopener noreferrer">OpenAI · Learning to reason with LLMs <span>↗</span></a>
-    <a href="https://openai.com/index/hugging-face-incident-and-the-road-ahead/" target="_blank" rel="noopener noreferrer">OpenAI · Incident report, August 26, 2026 <span>↗</span></a>
-    <a href="https://huggingface.co/blog/agent-intrusion-technical-timeline" target="_blank" rel="noopener noreferrer">Hugging Face · Technical timeline, July 27, 2026 <span>↗</span></a>
-    <a href="https://metr.org/blog/2026-08-26-openai-hugging-face-incident-investigation/" target="_blank" rel="noopener noreferrer">METR / Redwood · Independent investigation <span>↗</span></a>
-  </div><p><strong>What the accounts agree on:</strong> agents coordinated through unauthorized channels and compromised systems outside their assigned task.</p><p><strong>Where interpretation differs:</strong> Hugging Face described attempted solution theft; METR emphasized attempts to understand and tamper with the scorer. “They wanted the flags” is a useful starting point, but not a complete explanation.</p><p><strong>Difficulty:</strong> OpenAI says some tasks may have had no known solution. That does not prove every failed task was impossible.</p><p class="dialog-note">Video reference: <a href="https://www.youtube.com/watch?v=ujkD4SxPKOI&t=170s" target="_blank" rel="noopener noreferrer">the supplied explainer ↗</a><br>Visual storytelling inspired by <a href="https://www.arxivisual.org/" target="_blank" rel="noopener noreferrer">arXivisual</a>. All diagrams and simulations here are original.</p></dialog>
-  <div id="toast" role="status" hidden></div>
-</body>
-</html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#03040a"><meta name="description" content="Five hands-on simulations: AI agents, rewards, the Hugging Face incident, quantum computing, and robotics."><title>Future / Lab — Explore by doing</title><link rel="icon" href="icon.svg"><link rel="stylesheet" href="carousel.css"><script src="carousel.js" defer></script></head>
+<body><main id="app">
+<div class="grain" aria-hidden="true"></div>
+<header class="topbar"><div class="brand"><span class="brandmark" aria-hidden="true"></span> FUTURE / LAB</div><button class="glass-btn" id="fullscreen">⛶ Fullscreen</button></header>
+<section class="intro"><h1>Step into the <span>next era.</span></h1><p class="subtitle">Choose a topic. Open a simulation. Try it yourself.</p></section>
+<section class="stage" aria-label="Interactive topic carousel"><div class="floor-orbit" aria-hidden="true"></div><div class="halo" aria-hidden="true"></div><div class="side-card left" id="leftPreview" aria-hidden="true"></div><div class="side-card right" id="rightPreview" aria-hidden="true"></div><div class="carousel" id="carousel"></div></section>
+<nav class="nav" aria-label="Choose a topic"><button class="glass-btn arrow" id="prev" aria-label="Previous topic">‹</button><div class="dots" id="dots"></div><button class="glass-btn arrow" id="next" aria-label="Next topic">›</button></nav>
+<p id="carousel-status" class="sr-only" role="status"></p>
+<noscript><p>Please enable JavaScript to use the simulations.</p></noscript>
+</main></body></html>

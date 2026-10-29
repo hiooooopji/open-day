@@ -1,0 +1,60 @@
+.back-topics{position:fixed;left:24px;top:15px;z-index:25;font-size:13px;color:#9dadbe;padding:8px 12px;border-radius:30px;background:#090c12d9;backdrop-filter:blur(12px)}
+.back-topics:hover{color:#e6eef8;background:#18202f}
+.slide,.slide.original-slide{padding-top:66px}
+.quantum-slide{--lab-accent:#d5a0ff}.robotics-slide{--lab-accent:#73f0cf}
+.quantum-slide em,.robotics-slide em{color:var(--lab-accent)}
+.quantum-slide .slide-heading,.robotics-slide .slide-heading{align-items:center}
+.quantum-slide .slide-heading>p,.robotics-slide .slide-heading>p{max-width:370px;white-space:normal;flex-shrink:1;text-align:left;font-size:15px}
+.science-lab{display:grid;grid-template-rows:minmax(0,1fr) auto auto;gap:18px;min-height:0}
+.science-main{display:grid;grid-template-columns:1.1fr 1fr;gap:clamp(30px,6vw,100px);align-items:center;min-height:0}
+.qubit-visual{display:flex;align-items:center;justify-content:center;flex-direction:column;min-height:0;height:100%}
+.qubit-visual svg{width:100%;max-height:310px;min-height:150px;overflow:visible;flex:1}
+.qubit-visual .orbit{fill:#b39bff05;stroke:#a391c944;stroke-width:1.5}
+.qubit-visual .axis{stroke:#8491ad40;stroke-dasharray:4 7}
+.qubit-visual text{fill:#a9b2c8;font:15px var(--sans)}
+#q-vector{stroke:#d5a0ff;stroke-width:3;filter:drop-shadow(0 0 8px #b7a1ff80)}
+#q-tip{fill:#e5cdff;filter:drop-shadow(0 0 10px #c6a4ff)}
+#q-projection{stroke:#d5a0ff50;fill:none;stroke-dasharray:4 5}
+#q-state{font:clamp(15px,1.7vw,26px) var(--mono);color:#dcc7ff;text-align:center;margin:5px 0 16px}
+.circuit{display:flex;align-items:center;gap:9px;max-width:100%;overflow-x:auto;min-height:45px;padding:5px 0}
+.circuit-start{font-size:21px;color:#d7c5ee;margin-right:7px;white-space:nowrap}
+.gate-chip{background:#2d223c;color:#dfc3ff;border-radius:7px;font:16px var(--mono);padding:9px 12px;position:relative;white-space:nowrap}.gate-chip.measured{background:#173c35;color:#93f4dd}
+.quantum-readout h3{font-size:21px;font-weight:450;margin-bottom:28px}
+.quantum-prob{display:flex;justify-content:space-between;font-size:17px;margin-bottom:10px}.quantum-prob strong{font:22px var(--mono);font-weight:400}
+.quantum-prob.zero{color:#9cebd7}.quantum-prob.one{color:#d5a0ff}
+.quantum-track{height:8px;background:#ffffff0b;border-radius:9px;overflow:hidden;margin-bottom:24px}
+.quantum-track i{display:block;height:100%;background:#9cebd7;transition:width .3s}.quantum-track.one i{background:#d5a0ff}
+.samples{display:grid;grid-template-columns:repeat(20,1fr);gap:5px;min-height:63px;align-content:center;margin-top:22px}
+.shot{display:block;aspect-ratio:1;max-height:10px;border-radius:50%;background:#9cebd7}.shot-1{background:#d5a0ff}
+#q-sample-count{font-size:13px;color:#9caac0;margin-top:12px}
+.science-controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.science-controls .button{font-size:13px;padding:10px 16px;background:#ffffff07;min-height:40px}
+.science-controls .button.primary{background:var(--lab-accent);color:#1a1424}
+.gate-button{display:flex;align-items:center;gap:10px}.gate-button b{font:17px var(--mono);color:var(--lab-accent)}
+.control-gap{width:14px}
+.preset-controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:14px}
+.preset-controls span{color:#8f9cb3;font-size:13px;margin-right:4px}
+.preset-controls button{background:none;border:0;color:#c8b4e0;padding:7px 10px;font-size:13px;border-radius:5px}
+.preset-controls button:hover{background:#b796e811}
+.science-insight{font-size:15px;color:#b7c4d5;line-height:1.6;min-height:48px;max-width:1050px}
+.robotics-lab{grid-template-rows:minmax(0,1fr) auto auto}
+.robot-main{grid-template-columns:1.55fr 1fr;gap:clamp(28px,4vw,70px)}
+.robot-map{display:flex;align-items:center;justify-content:center;height:100%;min-height:0}
+.robot-grid{width:100%;max-width:min(630px,calc((100svh - 350px)*1.5));aspect-ratio:12/8;display:grid;grid-template-columns:repeat(12,1fr);grid-template-rows:repeat(8,1fr);gap:3px;background:#0b121a;padding:3px;border-radius:10px}
+.robot-cell{min-width:0;min-height:0;padding:0;display:grid;place-items:center;position:relative;background:#16202a;border:0;border-radius:4px;transition:background .15s;color:#8ff0d6;cursor:crosshair}
+.robot-cell.sensed{background:#17362e}.robot-cell.visited{background:#152b2d}
+.robot-cell.planned:after{content:'';position:absolute;width:5px;height:5px;background:#73f0cf88;border-radius:50%;pointer-events:none}
+.robot-cell.wall{background:#3d3841}.robot-cell.wall>span{width:57%;height:57%;border-radius:3px;background:#7e6670}
+.robot-cell.wall.detected{background:#69533a}.robot-cell.wall.detected>span{background:#e1b16f}
+.robot-cell.goal{font-size:clamp(20px,2.2vw,32px);color:#73f0cf;background:#193b36}
+.robot-cell.robot{background:#347365;cursor:default}.robot-cell.robot:after,.robot-cell.goal:after{display:none}
+.robot-body{display:flex;width:63%;height:57%;align-items:center;justify-content:space-evenly;background:#b2f9e6;border-radius:7px;box-shadow:0 0 18px #73f0cf55;position:relative}.robot-body:before{content:'';position:absolute;width:2px;height:20%;background:#b2f9e6;top:-18%}.robot-body i{width:15%;height:28%;border-radius:4px;background:#193d35}
+.robot-cell:hover{outline:1px solid #bdf6e080;outline-offset:-1px}.robot-cell:focus-visible{outline:2px solid #d9fff4;outline-offset:0;z-index:2}
+.robot-info{align-self:center;min-width:0}.robot-cycle{display:flex;align-items:center;gap:13px;color:#7ee3ca;font-size:clamp(17px,1.8vw,25px);margin-bottom:25px}.robot-cycle span{color:#4c756b}
+.robot-stats{display:flex;gap:26px;margin:24px 0 30px}.robot-stats div{display:flex;flex-direction:column;gap:3px}.robot-stats b{font:28px var(--mono);font-weight:400;color:#c7eee5}.robot-stats span{font-size:13px;color:#92a9ac}
+.map-tools{display:flex;gap:8px;flex-wrap:wrap}.map-tools button{font-size:13px;border:0;background:#ffffff05;padding:9px 12px;border-radius:5px;color:#9cb0b8}.map-tools button.selected{background:#244e42;color:#9ff6db}
+.map-instruction{font-size:14px;line-height:1.7;color:#a2b5bd;margin:15px 0}
+.robot-legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:#a4b3bd;margin-top:20px}.robot-legend span{display:flex;align-items:center;gap:7px}.robot-legend i{width:10px;height:10px;border-radius:2px;background:#e1b16f}.robot-legend .sensor-key{background:#245747}.robot-legend .route-key{width:5px;height:5px;background:#73f0cf;border-radius:50%}
+@media(min-width:901px) and (max-height:800px){.slide,.slide.original-slide{padding-top:62px}.quantum-slide .slide-heading h1,.robotics-slide .slide-heading h1{font-size:39px}.science-main{gap:35px}.qubit-visual svg{max-height:230px}.quantum-readout h3{font-size:18px;margin-bottom:15px}.quantum-track{margin-bottom:18px}.samples{margin-top:12px;min-height:45px}.science-lab{gap:12px}.science-controls .button{padding:8px 12px}.preset-controls{margin-top:6px}.science-insight{font-size:14px}.robot-stats{margin:15px 0 20px}.robot-cycle{margin-bottom:15px}.robot-grid{max-width:min(600px,calc((100svh - 310px)*1.5))}}
+@media(max-width:900px){.slide,.slide.original-slide{padding-top:75px}.science-lab{grid-template-rows:auto auto auto}.science-main{gap:30px}.robot-grid{max-width:none}.qubit-visual svg{height:250px;flex:auto}.robot-stats{gap:18px}.robot-cycle{gap:8px;font-size:18px}.science-insight{min-height:0}}
+@media(max-width:650px){.back-topics{left:50%;transform:translateX(-50%);top:12px;padding:8px 16px}.slide,.slide.original-slide{padding-top:72px}.science-main,.robot-main{grid-template-columns:1fr;gap:28px}.quantum-slide .slide-heading>p,.robotics-slide .slide-heading>p{font-size:14px}.qubit-visual svg{height:230px}.quantum-readout h3{font-size:19px;margin-bottom:20px}.quantum-track{margin-bottom:20px}.science-controls{gap:8px}.science-controls .button{font-size:12px;padding:9px 11px}.control-gap{display:none}.samples{min-height:48px}.robot-grid{max-width:100%}.robot-cycle{font-size:21px;gap:14px}.robot-stats{margin:20px 0}.robot-stats b{font-size:26px}.robot-cell.goal{font-size:20px}.robot-body{border-radius:4px}.science-insight{font-size:14px}}
