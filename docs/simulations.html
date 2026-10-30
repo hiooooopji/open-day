@@ -11,9 +11,11 @@
   <link rel="stylesheet" href="original-panels.css">
   <link rel="stylesheet" href="presentation.css">
   <link rel="stylesheet" href="labs.css">
+  <link rel="stylesheet" href="incident-3d.css">
   <script src="lab-models.js" defer></script>
   <script src="labs.js" defer></script>
   <script src="app.js" defer></script>
+  <script type="module" src="incident-3d.js"></script>
 </head>
 <body>
   <a class="skip" href="#main">Skip to the visual</a>
@@ -58,7 +60,7 @@
     <section class="slide incident-slide" id="incident" aria-labelledby="incident-title" hidden>
       <div class="slide-heading"><div><h1 id="incident-title">When the loop <em>left the lab.</em></h1></div><p>A difficult evaluation.<br>Reduced safeguards. Real-world consequences.</p></div>
       <div class="visual-panel incident-panel">
-        <div class="panel-bar"><span class="task-label"><strong>Solve the challenge. Return the flag.</strong></span></div>
+        <div class="panel-bar"><span class="task-label"><strong>Hugging Face incident</strong></span><span class="scene-scope">Conceptual reconstruction</span></div>
         <div id="incident-canvas" class="canvas" aria-label="Interactive reconstruction of the Hugging Face incident"></div>
         <div class="timeline" aria-label="Incident stages">
           <button data-event="0" class="selected" aria-pressed="true"><span>01</span>The challenge</button>
@@ -68,7 +70,7 @@
           <button data-event="4" aria-pressed="false"><span>05</span>Gaming the test</button>
           <button data-event="5" aria-pressed="false"><span>06</span>The response</button>
         </div>
-        <div class="playback"><button id="incident-play" class="button primary">▷ Play the story</button><button id="incident-step" class="button">Step →</button><button id="incident-reset" class="icon-button" aria-label="Reset incident reconstruction">↺</button><span id="incident-date" class="step-counter">JULY 2026</span></div>
+        <div class="playback"><button id="incident-play" class="button primary">▷ Play the story</button><button id="incident-step" class="button">Step →</button><button id="incident-reset" class="icon-button" aria-label="Reset incident reconstruction">↺</button><button id="incident-motion" class="button" aria-pressed="true">Pause motion</button><span id="incident-date" class="step-counter">JULY 2026</span></div>
       </div>
       <div class="caption"><p id="incident-caption" aria-live="polite"></p></div>
     </section>

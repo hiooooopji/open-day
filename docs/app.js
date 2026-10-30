@@ -128,6 +128,9 @@ const events=[
 ];
 function renderIncident(){
   const m=mobileQuery.matches,e=events[incidentStep];
+  if(window.IncidentScene?.ready){
+    window.IncidentScene.setStage(incidentStep,Boolean(incidentTimer),e);
+  }else{
   let content='';
   const boxes=m?[[25,120,165,85],[235,120,160,85],[25,365,165,85],[235,365,160,85]]:[[40,180,190,90],[330,180,175,90],[650,180,175,90],[970,180,195,90]];
   const paths=m?['M190 163H235','M315 205V290H108V365','M190 408H235']:['M230 225H330','M505 225H650','M825 225H970'];
@@ -149,6 +152,7 @@ function renderIncident(){
   else content+=`<text x="${m?210:720}" y="${m?544:355}" class="diagram-label" text-anchor="middle">${incidentStep===5?'CONTAINMENT + STRONGER CONTROLS':incidentStep>=2?'AN EXTERNAL APP BECAME A LAUNCHPAD':'AGENT DOTS ARE SYMBOLIC'}</text>`;
   content+=particle(paths[Math.max(0,Math.min(2,incidentStep-1))],Boolean(incidentTimer)&&incidentStep>0&&incidentStep<5);
   $('#incident-canvas').innerHTML=svg(content,m?420:1200,m?590:410,'Agents coordinated through a shared service, crossed isolation controls, used an internet-connected cloud application, and compromised Hugging Face.');
+  }
   $$('[data-event]').forEach((b,i)=>{b.classList.toggle('selected',i===incidentStep);b.setAttribute('aria-pressed',String(i===incidentStep));});
   $('#incident-date').textContent=e.date;$('#incident-caption').textContent=e.caption;
   $('#incident-play').textContent=incidentTimer?'Ⅱ Pause story':incidentStep===5?'↺ Replay the story':'▷ Play the story';
@@ -156,7 +160,7 @@ function renderIncident(){
 }
 function stopIncident(){clearInterval(incidentTimer);incidentTimer=null;renderIncident();}
 function nextIncident(){incidentStep=Math.min(5,incidentStep+1);if(incidentStep===5)stopIncident();renderIncident();}
-function playIncident(){if(incidentTimer){stopIncident();return;}if(incidentStep===5)incidentStep=0;incidentTimer=setInterval(nextIncident,4800);renderIncident();}
+function playIncident(){if(incidentTimer){stopIncident();return;}if(incidentStep===5)incidentStep=0;incidentTimer=setInterval(nextIncident,6500);renderIncident();}
 $('#incident-play').addEventListener('click',playIncident);
 $('#incident-step').addEventListener('click',()=>{stopIncident();nextIncident();});
 $('#incident-reset').addEventListener('click',()=>{stopIncident();incidentStep=0;renderIncident();});

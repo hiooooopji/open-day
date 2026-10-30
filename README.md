@@ -25,3 +25,13 @@ npm run check
 Open **http://127.0.0.1:5173**. The check validates inline JavaScript syntax in the six entry pages and the shared simulation controller. GitHub Pages publishes `docs/` from `main`.
 
 The full earlier custom presentation remains available at `docs/simulations.html`; the cybersecurity route uses its incident-only view. Its existing checks are available with `npm run check:legacy`.
+
+## Hugging Face 3D scene
+
+The incident demo uses an interactive WebGL scene with an agent swarm, message tiles, packet routes, an isolation barrier, and a containment sequence. Select timeline stages or click a 3D station to explore the story in the network overview. Drag to orbit and use the camera reset button to restore the view. Play advances the six chapters. Pause motion freezes ambient animation independently of story playback. Reduced-motion preferences start the scene without continuous movement.
+
+The Hidden messages stage animates a message passed through a shared directory: Agent A publishes it through the shared service, and Agent B reads it. A folder and moving note show the exchange directly in the scene.
+
+`docs/incident-3d.js` and `docs/incident-3d.css` contain this scene. The original SVG diagram remains available automatically when WebGL is unavailable. The scene is a conceptual reconstruction, not a literal infrastructure map. The other four labs retain their existing visuals.
+
+Three.js 0.180.0 is served locally from `docs/vendor/three/`; its MIT license is included there. The 3D view has no runtime CDN requests. `npm run check` also checks the scene module's syntax.
