@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "python3 -m http.server 5173 --bind 127.0.0.1 --directory docs",
-    "check": "node --check docs/app.js && node --check docs/labs.js && node --check docs/lab-models.js && node --check docs/carousel.js && node --test tests/lab-models.test.cjs"
+    "check": "node scripts/check-site.cjs",
+    "check:legacy": "node --check docs/app.js && node --check docs/labs.js && node --check docs/lab-models.js && node --check docs/carousel.js && node --test tests/lab-models.test.cjs"
   }
 }

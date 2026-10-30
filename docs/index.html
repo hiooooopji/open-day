@@ -1,11 +1,531 @@
-<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#03040a"><meta name="description" content="Five hands-on simulations: AI agents, rewards, the Hugging Face incident, quantum computing, and robotics."><title>Future / Lab — Explore by doing</title><link rel="icon" href="icon.svg"><link rel="stylesheet" href="carousel.css"><script src="carousel.js" defer></script></head>
-<body><main id="app">
-<div class="grain" aria-hidden="true"></div>
-<header class="topbar"><div class="brand"><span class="brandmark" aria-hidden="true"></span> FUTURE / LAB</div><button class="glass-btn" id="fullscreen">⛶ Fullscreen</button></header>
-<section class="intro"><h1>Step into the <span>next era.</span></h1><p class="subtitle">Choose a topic. Open a simulation. Try it yourself.</p></section>
-<section class="stage" aria-label="Interactive topic carousel"><div class="floor-orbit" aria-hidden="true"></div><div class="halo" aria-hidden="true"></div><div class="side-card left" id="leftPreview" aria-hidden="true"></div><div class="side-card right" id="rightPreview" aria-hidden="true"></div><div class="carousel" id="carousel"></div></section>
-<nav class="nav" aria-label="Choose a topic"><button class="glass-btn arrow" id="prev" aria-label="Previous topic">‹</button><div class="dots" id="dots"></div><button class="glass-btn arrow" id="next" aria-label="Next topic">›</button></nav>
-<p id="carousel-status" class="sr-only" role="status"></p>
-<noscript><p>Please enable JavaScript to use the simulations.</p></noscript>
-</main></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<!-- This site is hosted on Netlify. Anyone can build and deploy a site
+     like this one for free: https://netlify.new/?utm_campaign=loops&utm_source=ai-legible&utm_medium=owned&utm_content=comment&utm_id=37984c22-9f16-4848-b053-c91ac00f79bb
+     Netlify hosting facts for this site: static/SSR served via Netlify Edge. -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Future / Lab — Emerging CS Trends</title>
+<style>
+:root {
+  --bg:#03040a; --text:#f5f7ff; --muted:#aab2ca;
+  --cyan:#8cecff; --violet:#b7a1ff; --glass:rgba(255,255,255,.035);
+  --edge:rgba(255,255,255,.23);
+}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",sans-serif}
+button{font:inherit;color:inherit}
+#app{position:relative;width:100vw;height:100dvh;min-height:560px;overflow:hidden;isolation:isolate;
+  background:
+   radial-gradient(ellipse at 12% 12%,rgba(255,35,170,.38),transparent 34%),
+   radial-gradient(ellipse at 90% 16%,rgba(65,65,255,.42),transparent 36%),
+   radial-gradient(ellipse at 48% 100%,rgba(0,220,255,.22),transparent 42%),
+   linear-gradient(135deg,#10051f,#1a0b3c 48%,#07172d)}
+#app:before{content:"";position:absolute;inset:-40%;z-index:-3;pointer-events:none;
+ background:conic-gradient(from 40deg at 50% 50%,transparent,rgba(69,103,210,.08),transparent,rgba(127,81,214,.08),transparent);
+ filter:blur(100px);animation:ambient 32s linear infinite}
+@keyframes ambient{to{transform:rotate(360deg)}}
+.grain{position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:.25;
+ background-image:radial-gradient(1px 1px at 8% 20%,#fff 60%,transparent),radial-gradient(1px 1px at 83% 17%,#b9d9ff 60%,transparent),radial-gradient(1px 1px at 73% 76%,#fff 60%,transparent),radial-gradient(1px 1px at 21% 72%,#d8d0ff 60%,transparent),radial-gradient(1px 1px at 48% 12%,#fff 60%,transparent),radial-gradient(1px 1px at 91% 58%,#fff 60%,transparent)}
+.topbar{position:absolute;top:22px;left:30px;right:30px;display:flex;align-items:center;justify-content:space-between;z-index:30}
+.brand{display:flex;align-items:center;gap:10px;color:#e9edff;font-size:11px;letter-spacing:2.7px;text-transform:uppercase}
+.brandmark{width:9px;height:9px;border-radius:50%;background:#9ceeff;box-shadow:0 0 17px #79e6ff}
+.topright{display:flex;gap:9px}
+.glass-btn{border:1px solid rgba(255,255,255,.19);background:rgba(255,255,255,.035);
+ backdrop-filter:blur(22px) saturate(160%);-webkit-backdrop-filter:blur(22px) saturate(160%);
+ border-radius:999px;padding:11px 16px;color:#e9edff;font-size:12px;cursor:pointer;
+ box-shadow:inset 0 1px rgba(255,255,255,.13),0 8px 25px #0003;transition:background .25s,transform .25s,border-color .25s}
+.glass-btn:hover{background:rgba(255,255,255,.10);border-color:#ffffff55;transform:translateY(-2px)}
+.intro{position:absolute;top:10.5%;left:0;right:0;text-align:center;pointer-events:none;z-index:2}
+.eyebrow{font-size:10px;text-transform:uppercase;letter-spacing:4px;color:#91eaff;font-weight:650}
+h1{font-size:clamp(30px,4vw,53px);letter-spacing:-2.2px;font-weight:650;margin:13px 0 8px}
+h1 span{background:linear-gradient(100deg,#fff 5%,#b7d9ff 50%,#c0aaff);-webkit-background-clip:text;color:transparent}
+.subtitle{margin:0;color:#aab3ce;font-size:14px}
+.stage{position:absolute;inset:0;perspective:1700px;perspective-origin:50% 49%;display:grid;place-items:center}
+.floor-orbit{position:absolute;left:50%;top:53%;width:min(76vw,1050px);height:min(76vw,1050px);
+ border:1px solid rgba(125,178,255,.09);border-radius:50%;transform:translate(-50%,-50%) rotateX(73deg);pointer-events:none}
+.floor-orbit:after{content:"";position:absolute;inset:9%;border:1px solid rgba(182,146,255,.08);border-radius:50%}
+.halo{position:absolute;left:50%;top:51%;width:min(65vw,900px);height:min(65vw,900px);border-radius:50%;
+ transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(66,114,190,.11),rgba(85,58,143,.035) 40%,transparent 68%);
+ filter:blur(18px);pointer-events:none}
+.carousel{position:relative;width:min(76vw,1040px);height:min(57vh,510px);min-height:410px;
+ transform-style:preserve-3d;will-change:transform;z-index:4}
+.slide{position:absolute;inset:0;border-radius:34px;overflow:hidden;cursor:pointer;
+ border:1px solid rgba(255,255,255,.25);
+ background:linear-gradient(135deg,rgba(255,255,255,.16),rgba(255,255,255,.055) 48%,rgba(255,255,255,.085));
+ backdrop-filter:blur(28px) saturate(145%);-webkit-backdrop-filter:blur(28px) saturate(145%);
+ box-shadow:0 40px 110px rgba(0,0,0,.45),inset 0 1px rgba(255,255,255,.24),inset 0 -1px rgba(255,255,255,.04);
+ transform-style:preserve-3d;transition:transform .82s cubic-bezier(.2,.8,.2,1),opacity .65s,filter .65s,border-color .4s;
+ padding:clamp(25px,4vw,52px);display:flex;flex-direction:column;justify-content:space-between;
+}
+.slide:before{content:"";position:absolute;inset:0;pointer-events:none;
+ background:linear-gradient(118deg,rgba(255,255,255,.12),transparent 25%,transparent 65%,rgba(151,185,255,.035));
+ opacity:.75}
+.slide:after{content:"";position:absolute;top:-65%;left:-30%;width:70%;height:180%;pointer-events:none;
+ transform:rotate(24deg);background:linear-gradient(90deg,transparent,rgba(255,255,255,.035),transparent)}
+.slide.active{border-color:rgba(183,223,255,.48);box-shadow:0 45px 130px rgba(0,0,0,.52),0 0 75px var(--glow,rgba(98,170,255,.08)),inset 0 1px rgba(255,255,255,.3)}
+.slide-content{position:relative;z-index:1;transform:translateZ(38px)}
+.slide-head{display:flex;align-items:center;justify-content:space-between;gap:15px}
+.index{font-size:11px;letter-spacing:2px;color:#c1c9e2}
+.iconbox{width:66px;height:66px;border-radius:22px;display:grid;place-items:center;font-size:30px;
+ color:var(--accent);border:1px solid color-mix(in srgb,var(--accent) 45%,transparent);
+ background:color-mix(in srgb,var(--accent) 8%,transparent);box-shadow:inset 0 1px rgba(255,255,255,.16),0 0 35px color-mix(in srgb,var(--accent) 10%,transparent)}
+.tag{margin-top:23px;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);font-weight:700}
+.slide h2{font-size:clamp(34px,5vw,64px);line-height:1.02;letter-spacing:-2.5px;margin:12px 0 16px;font-weight:650;max-width:760px}
+.summary{max-width:700px;color:#d3d9ec;font-size:clamp(14px,1.5vw,18px);line-height:1.75;margin:0}
+.slide-bottom{position:relative;z-index:1;display:flex;justify-content:space-between;align-items:flex-end;gap:20px;transform:translateZ(25px)}
+.chiprow{display:flex;gap:8px;flex-wrap:wrap}
+.chip{font-size:10px;letter-spacing:.5px;padding:8px 11px;border-radius:99px;color:#d6ddf1;
+ border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.025)}
+.explore{font-size:11px;color:#c3cce5;white-space:nowrap}
+.explore span{color:var(--accent);font-size:17px;margin-left:8px}
+.side-card{position:absolute;top:50%;width:min(24vw,270px);height:min(34vh,280px);min-height:220px;
+ border-radius:28px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.065);
+ backdrop-filter:blur(15px);-webkit-backdrop-filter:blur(15px);padding:25px;opacity:.48;z-index:1;
+ transform-style:preserve-3d;transition:transform .8s,opacity .8s;pointer-events:none}
+.side-card.left{left:0;transform:translate(-24%,-50%) rotateY(27deg) scale(.85)}
+.side-card.right{right:0;transform:translate(24%,-50%) rotateY(-27deg) scale(.85)}
+.side-card .mini-icon{font-size:25px;color:var(--accent)}
+.side-card h3{font-size:22px;line-height:1.1;margin:24px 0 10px;letter-spacing:-.7px}
+.side-card p{font-size:11px;line-height:1.6;color:#aeb7d0;margin:0}
+.nav{position:absolute;left:50%;bottom:5.4%;transform:translateX(-50%);z-index:20;display:flex;align-items:center;gap:20px}
+.arrow{width:49px;height:49px;border-radius:50%;display:grid;place-items:center;font-size:20px;padding:0}
+.dots{display:flex;align-items:center;gap:8px;padding:0 4px}
+.dot{width:5px;height:5px;border-radius:50%;border:0;padding:0;background:#5c647b;cursor:pointer;transition:all .3s}
+.dot.active{width:24px;border-radius:10px;background:#b3eaff;box-shadow:0 0 12px #8cecff80}
+.progress{position:absolute;bottom:3%;left:50%;transform:translateX(-50%);color:#707b99;font-size:10px;letter-spacing:2px;z-index:3}
+.hint{position:absolute;bottom:3.2%;left:30px;color:#707b99;font-size:10px;letter-spacing:.4px;z-index:4}
+.detail-overlay{position:absolute;inset:0;z-index:25;display:none;place-items:center;padding:70px 20px 35px;
+ background:rgba(3,4,10,.58);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px)}
+.detail-overlay.open{display:grid;animation:fade .35s ease}
+#simulationHub{z-index:27}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.detail-card{width:min(900px,94vw);max-height:82vh;overflow:auto;padding:clamp(24px,4vw,46px);
+ border-radius:32px;border:1px solid rgba(255,255,255,.24);
+ background:
+  radial-gradient(ellipse at 8% 4%,color-mix(in srgb,var(--topic-color,#8cecff) 28%,transparent),transparent 52%),
+  radial-gradient(ellipse at 95% 95%,rgba(183,161,255,.15),transparent 48%),
+  linear-gradient(145deg,rgba(44,35,78,.97),rgba(13,18,40,.98) 58%,rgba(35,18,55,.97));
+ backdrop-filter:blur(35px) saturate(150%);-webkit-backdrop-filter:blur(35px) saturate(150%);
+ box-shadow:0 35px 110px #0009,inset 0 1px #ffffff28}
+.detail-title{display:flex;align-items:center;gap:18px;margin-bottom:18px}
+.detail-title .iconbox{flex-shrink:0}
+.detail-title h2{font-size:clamp(28px,4vw,45px);letter-spacing:-1.5px;margin:6px 0 0}
+.detail-title .tag{margin:0}
+.definition{font-size:clamp(15px,1.6vw,19px);line-height:1.75;color:#edf0ff;margin:18px 0 24px}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.info{padding:19px;border-radius:20px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.19)}
+.info h3{font-size:10px;letter-spacing:1.7px;text-transform:uppercase;color:var(--cyan);margin:0 0 10px}
+.info p{font-size:13px;line-height:1.75;color:#cbd3e8;margin:0}
+.explain{margin-top:12px;padding:18px 20px;border-radius:20px;border:1px solid rgba(142,236,255,.18);
+ background:linear-gradient(100deg,rgba(113,146,255,.07),rgba(112,230,255,.035));font-size:13px;line-height:1.8;color:#edf1ff}
+.detail-footer{display:flex;justify-content:space-between;align-items:center;margin-top:22px;gap:10px}
+
+.demo-area{margin-top:24px;padding:22px;border-radius:24px;background:rgba(7,7,25,.30);border:1px solid rgba(255,255,255,.2)}
+.demo-tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.demo-tab{border:1px solid rgba(255,255,255,.19);border-radius:999px;padding:8px 12px;background:rgba(255,255,255,.045);color:#cbd4ed;font-size:11px;cursor:pointer}
+.demo-tab.active{background:rgba(140,236,255,.16);border-color:rgba(140,236,255,.55);color:#fff}
+.hub-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.hub-item{padding:20px;border:1px solid rgba(255,255,255,.18);border-radius:20px;background:linear-gradient(135deg,rgba(255,255,255,.09),rgba(255,255,255,.025));text-align:left;cursor:pointer;transition:.2s}
+.hub-item:hover{transform:translateY(-3px);border-color:rgba(140,236,255,.55);background:rgba(255,255,255,.10)}
+.hub-item .hub-icon{font-size:25px;margin-bottom:12px}
+.hub-item h3{margin:0 0 8px;font-size:18px;color:var(--hub-color)}
+.hub-item p{margin:0;color:#c5cde2;font-size:12px;line-height:1.65}
+.sim-panel{border:1px solid rgba(255,255,255,.14);border-radius:18px;padding:17px;background:rgba(255,255,255,.035)}
+.sim-panel h4{font-size:13px;margin:0 0 8px}
+.sim-panel p{font-size:12px;color:#c9d2e8;line-height:1.65;margin:0 0 12px}
+.sim-row{display:flex;flex-wrap:wrap;gap:9px;align-items:center;margin-top:12px}
+.sim-select{max-width:100%;padding:11px;border:1px solid rgba(255,255,255,.2);border-radius:12px;background:#21193d;color:white}
+.sim-output{margin-top:12px;padding:13px;border:1px solid rgba(255,255,255,.12);border-radius:14px;background:rgba(0,0,0,.17);font-size:12px;line-height:1.7;color:#e9f7ff;min-height:42px}
+.grid-board{display:grid;grid-template-columns:repeat(6, minmax(28px,1fr));gap:5px;max-width:360px;margin:12px 0}
+.grid-cell{aspect-ratio:1;border-radius:8px;border:1px solid #ffffff20;background:#ffffff08;display:grid;place-items:center;font-size:17px}
+.grid-cell.wall{background:#ff8ab81c;border-color:#ff8ab85c}.grid-cell.robot-here{background:#7cf3ff30;border-color:#7cf3ff}.grid-cell.goal{background:#9cffc61a;border-color:#9cffc6}
+.quantum-gates{display:flex;gap:8px;flex-wrap:wrap}
+.demo-heading{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:16px}
+.demo-heading h3{margin:0;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:#fff}
+.demo-caption{font-size:11px;color:#e0d1f4;line-height:1.5}
+.demo-btn{border:1px solid rgba(255,255,255,.28);border-radius:13px;padding:10px 14px;background:rgba(255,255,255,.12);cursor:pointer;transition:.2s}
+.demo-btn:hover{background:rgba(255,255,255,.22);transform:translateY(-1px)}
+
+#launchTopicSimulation{width:100%;min-height:54px;padding:15px 20px;border:1px solid rgba(140,236,255,.45);border-radius:16px;background:linear-gradient(110deg,rgba(140,236,255,.16),rgba(183,161,255,.16));color:#f5f7ff;font-size:14px;font-weight:650;letter-spacing:.3px;cursor:pointer;transition:transform .2s,border-color .2s,background .2s}
+#launchTopicSimulation:hover{transform:translateY(-2px);border-color:#8cecff;background:linear-gradient(110deg,rgba(140,236,255,.25),rgba(183,161,255,.25))}
+#launchTopicSimulation:focus-visible{outline:2px solid #8cecff;outline-offset:4px}
+
+.robot-stage{min-height:185px;display:grid;place-items:center;position:relative;overflow:hidden;border-radius:18px;background:radial-gradient(ellipse at 50% 85%,rgba(0,220,255,.18),transparent 60%)}
+.robot{width:125px;height:142px;position:relative;cursor:pointer;filter:drop-shadow(0 0 22px rgba(103,235,255,.3));transition:transform .25s;outline:none}
+.robot:hover{transform:translateY(-5px) scale(1.03)}
+.robot .antenna{position:absolute;top:0;left:60px;width:5px;height:20px;background:#8cecff;border-radius:5px}
+.robot .antenna:before{content:"";position:absolute;width:13px;height:13px;top:-8px;left:-4px;border-radius:50%;background:#ff83d2;box-shadow:0 0 14px #ff83d2}
+.robot .head{position:absolute;top:19px;left:17px;width:91px;height:62px;border:2px solid #a9f4ff;border-radius:24px 24px 20px 20px;background:linear-gradient(145deg,rgba(175,249,255,.65),rgba(91,107,206,.32));box-shadow:inset 0 0 18px #b7ffff25}
+.robot .eye{position:absolute;top:22px;width:12px;height:15px;border-radius:50%;background:#9effff;box-shadow:0 0 12px #75f4ff;animation:blink 5s infinite}
+.robot .eye.left{left:20px}.robot .eye.right{right:20px}
+.robot .mouth{position:absolute;left:35px;bottom:10px;width:19px;height:5px;border-radius:8px;background:#ff9fe0;box-shadow:0 0 10px #ff9fe0}
+.robot .body{position:absolute;left:30px;top:88px;width:65px;height:48px;border:2px solid #a9f4ff;border-radius:17px 17px 21px 21px;background:linear-gradient(145deg,rgba(153,235,255,.45),rgba(114,81,190,.35))}
+.robot .body:before{content:"";position:absolute;left:25px;top:12px;width:11px;height:11px;border-radius:50%;background:#ff9fe0;box-shadow:0 0 15px #ff9fe0}
+.robot .arm{position:absolute;top:94px;width:13px;height:35px;border:2px solid #a9f4ff;border-radius:9px;background:#7f7df2}
+.robot .arm.left{left:13px;transform:rotate(13deg)}.robot .arm.right{right:13px;transform-origin:top;transform:rotate(25deg)}
+.robot.waving .arm.right{animation:wave .45s ease-in-out 4 alternate}.robot.waving .head{animation:nod .5s ease-in-out 2 alternate}
+@keyframes wave{to{transform:rotate(-48deg) translateY(-8px)}}@keyframes nod{to{transform:rotate(5deg) translateY(-3px)}}@keyframes blink{0%,46%,50%,100%{transform:scaleY(1)}48%{transform:scaleY(.12)}}
+.robot-message{min-height:27px;text-align:center;color:#dffcff;font-size:13px;margin-top:10px}
+.ai-demo{display:grid;grid-template-columns:1fr auto;gap:10px}.demo-input{min-width:0;width:100%;padding:12px 14px;border-radius:13px;border:1px solid rgba(255,255,255,.24);background:rgba(255,255,255,.07);color:white;outline:none}
+.demo-output{margin-top:12px;min-height:46px;padding:13px;border-radius:14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);font-size:13px;line-height:1.65;color:#f5eaff}
+.agent-steps{display:flex;flex-wrap:wrap;gap:8px}.agent-step{padding:10px 12px;border:1px solid rgba(255,255,255,.17);border-radius:13px;background:rgba(255,255,255,.05);font-size:12px;color:#e5d9f4}.agent-step.done{background:rgba(99,255,203,.14);border-color:#76ffcf;color:#eafff8}
+.quantum-wrap{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:center}.qubit{height:150px;border-radius:18px;display:grid;place-items:center;position:relative;background:radial-gradient(circle,rgba(178,121,255,.18),transparent 70%);border:1px solid rgba(255,255,255,.1)}
+.qubit-ring{width:95px;height:95px;border:1px solid #d0aaff;border-radius:50%;position:absolute;box-shadow:0 0 25px #b98aff28}.qubit-ring.two{transform:rotateX(65deg) rotateY(25deg);border-color:#7cf3ff}.qubit-ball{width:20px;height:20px;border-radius:50%;background:#f1c9ff;box-shadow:0 0 24px #cc8aff;position:absolute;transition:transform .35s}
+.quantum-readout{font-size:13px;line-height:1.7;color:#f0e5ff}
+.security-demo{display:grid;grid-template-columns:1fr 1fr;gap:12px}.security-case{padding:16px;border-radius:17px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.045)}.security-case h4{margin:0 0 8px;font-size:13px}.security-case p{margin:0 0 13px;font-size:11px;line-height:1.6;color:#e1d4f1}.status{font-size:11px;font-weight:700;letter-spacing:1px}.status.safe{color:#8effc7}.status.danger{color:#ff9fc6}
+@media(max-width:620px){.demo-area{padding:14px}.security-demo,.quantum-wrap,.hub-grid{grid-template-columns:1fr}.detail-grid{grid-template-columns:1fr}}
+
+@media(max-width:900px){.carousel{width:82vw;height:54vh}.side-card{width:20vw;padding:15px}.side-card h3{font-size:16px}.slide h2{font-size:clamp(32px,5vw,48px)}.hint{display:none}}
+@media(max-width:620px){
+ .topbar{top:14px;left:15px;right:15px}.brand{font-size:9px;letter-spacing:1.5px}.glass-btn{padding:9px 11px;font-size:11px}
+ .intro{top:11%}.eyebrow{font-size:9px;letter-spacing:2.5px}h1{font-size:32px;letter-spacing:-1.2px}.subtitle{font-size:12px}
+ .carousel{width:88vw;height:58vh;min-height:410px}.slide{padding:23px;border-radius:27px}
+ .slide h2{font-size:38px;letter-spacing:-1.5px}.summary{font-size:13px;line-height:1.65}.iconbox{width:50px;height:50px;border-radius:16px;font-size:24px}
+ .side-card{display:none}.slide-bottom{align-items:flex-start;flex-direction:column;gap:12px}.nav{bottom:5%}.arrow{width:43px;height:43px}.dots{gap:6px}
+ .detail-overlay{padding:55px 10px 15px}.detail-card{max-height:88vh;padding:20px;border-radius:25px}.detail-grid{grid-template-columns:1fr}.detail-title h2{font-size:27px}
+ .progress{bottom:1.5%}
+}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<main id="app">
+ <div class="grain"></div>
+ <header class="topbar">
+  <div class="brand"><span class="brandmark"></span> FUTURE / LAB</div>
+  <div class="topright">
+   <button class="glass-btn" id="openSimulations">◈ Simulations</button>
+   <button class="glass-btn" id="reset">↺ Reset</button>
+   <button class="glass-btn" id="fullscreen">⛶ Fullscreen</button>
+  </div>
+ </header>
+
+ <section class="intro" id="intro">
+  <div class="eyebrow">Five emerging computer science trends</div>
+  <h1>Step into the <span>next era.</span></h1>
+  <p class="subtitle">Turn the glass. Explore what is changing our world.</p>
+ </section>
+
+ <section class="stage" id="stage" aria-label="3D technology carousel">
+  <div class="floor-orbit"></div><div class="halo"></div>
+  <div class="side-card left" id="leftPreview"></div>
+  <div class="side-card right" id="rightPreview"></div>
+  <div class="carousel" id="carousel"></div>
+ </section>
+
+ <div class="nav">
+  <button class="glass-btn arrow" id="prev" aria-label="Previous topic">‹</button>
+  <div class="dots" id="dots"></div>
+  <button class="glass-btn arrow" id="next" aria-label="Next topic">›</button>
+ </div>
+ <div class="progress" id="progress">01 / 05</div>
+ <div class="hint">MOUSE TO TILT · ← → TO ROTATE · CLICK CARD FOR DETAILS</div>
+
+ <section class="detail-overlay" id="detailOverlay" aria-modal="true" role="dialog" aria-labelledby="detailTitle">
+  <article class="detail-card">
+   <div class="detail-title">
+    <div class="iconbox" id="dIcon"></div>
+    <div><div class="tag" id="dTag"></div><h2 id="detailTitle"></h2></div>
+   </div>
+   <p class="definition" id="dDefinition"></p>
+   <div class="detail-grid">
+    <div class="info"><h3>Think of it like this</h3><p id="dAnalogy"></p></div>
+    <div class="info"><h3>Real-world example</h3><p id="dExample"></p></div>
+    <div class="info"><h3>Why it matters</h3><p id="dBenefits"></p></div>
+    <div class="info"><h3>The challenge</h3><p id="dLimits"></p></div>
+   </div>
+   <div class="explain"><strong>Summary:</strong> <span id="dExplain"></span></div>
+   <section class="demo-area" id="demoArea" aria-label="Interactive topic simulation"></section>
+   <div class="detail-footer">
+    <span class="index" id="dCount"></span>
+    <button class="glass-btn" id="closeDetail">← Return to carousel</button>
+   </div>
+  </article>
+ </section>
+ <section class="detail-overlay" id="simulationHub" aria-modal="true" role="dialog" aria-labelledby="hubTitle">
+  <article class="detail-card hub-card">
+   <div class="detail-title"><div class="iconbox" style="--accent:#8cecff">◈</div><div><div class="tag">INTERACTIVE TECHNOLOGY LAB</div><h2 id="hubTitle">Choose a simulation</h2></div></div>
+   <p class="definition">Explore each idea by making choices, running a mini experiment, and seeing what happens. Every simulation runs locally in this browser.</p>
+   <div class="hub-grid" id="hubGrid"></div>
+   <div class="detail-footer"><span class="index">FIVE TOPICS · HANDS-ON DEMOS</span><button class="glass-btn" id="closeHub">← Return to topics</button></div>
+  </article>
+ </section>
+</main>
+
+<script>
+const topics = [
+ {id:"agentic",title:"Agentic AI",icon:"✧",color:"#8cecff",tag:"AI THAT TAKES ACTION",
+  summary:"AI that plans, uses tools, and works through a sequence of tasks toward a goal.",
+  definition:"Agentic AI systems can plan steps, use tools, observe results, and adjust their actions to reach a goal. They can do more than generate a response: they can work through a task.",
+  analogy:"A capable assistant who breaks a goal into steps, checks progress, and adapts when something changes.",
+  example:"A travel-planning agent could compare destinations, organise a draft itinerary, and ask for approval before booking anything.",
+  benefits:"Can automate multi-step work, connect different software tools, and reduce repetitive tasks.",
+  limits:"An agent can misunderstand instructions or take unwanted actions. Permissions, testing, and human approval matter.",
+  explain:"Generative AI can create an answer. Agentic AI can use AI plus tools to work through a sequence of tasks.",
+  chips:["Planning","Tool use","Automation"]},
+ {id:"generative",title:"Generative AI",icon:"✳",color:"#d3a0ff",tag:"MACHINES THAT CREATE",
+  summary:"AI that creates text, images, audio, video, and code from patterns learned during training.",
+  definition:"Generative AI learns patterns from training data and uses them to produce new content such as writing, images, audio, video, and computer code.",
+  analogy:"Like a creative assistant that has studied many examples and can draft something new, but still needs a human to check the result.",
+  example:"Ask an AI to explain a science concept, create a picture of a planet, or help draft and debug a small program.",
+  benefits:"Speeds up brainstorming, helps people explore ideas, and makes creative tools easier to use.",
+  limits:"It can invent facts, reproduce bias, and raise privacy or copyright concerns. Generated content needs review.",
+  explain:"It does not guarantee truth. It generates likely content based on learned patterns, so check important claims.",
+  chips:["Creation","Language models","Creative tools"]},
+ {id:"cyber",title:"Cybersecurity",icon:"⬡",color:"#ff91c9",tag:"PROTECTING OUR DIGITAL WORLD",
+  summary:"Defending devices, networks, accounts, and data against misuse and digital attacks.",
+  definition:"Cybersecurity uses technologies and practices to protect devices, networks, applications, and information. Modern approaches verify identity and access instead of automatically trusting a connection.",
+  analogy:"Like a building with identity checks, locked rooms, cameras, and alarms instead of one front door that stays open forever.",
+  example:"Multi-factor authentication asks for another proof of identity, such as a one-time code, in addition to a password.",
+  benefits:"Protects privacy, reduces fraud and disruption, and helps keep important services available.",
+  limits:"No system is perfectly secure. Weak passwords, social engineering, outdated software, and human mistakes remain risks.",
+  explain:"Cybersecurity is not just antivirus software. It combines people, processes, and technology to reduce digital risk.",
+  chips:["Privacy","Identity","Zero Trust"]},
+ {id:"quantum",title:"Quantum Computing",icon:"⎔",color:"#c3a0ff",tag:"A DIFFERENT KIND OF COMPUTING",
+  summary:"A different computing approach that may help solve certain specialised scientific problems.",
+  definition:"Quantum computers use quantum states, including superposition and entanglement, to process information differently from classical computers. Researchers are exploring where this approach could offer an advantage.",
+  analogy:"Think of a specialised scientific instrument: powerful for certain jobs, but not a replacement for every tool you already use.",
+  example:"Scientists are researching quantum simulations that could help model molecules and materials in ways that are difficult for classical computers.",
+  benefits:"Could eventually help with some chemistry, materials science, and other specialised computational problems.",
+  limits:"Current systems are difficult to scale and are affected by noise and errors. They are not faster at every task.",
+  explain:"Quantum computers are not simply super-fast laptops. Their promise is for specific problems where quantum methods fit.",
+  chips:["Qubits","Research","Specialised problems"]},
+ {id:"robotics",title:"Robotics",icon:"⌘",color:"#ffbd82",tag:"AI MEETS THE PHYSICAL WORLD",
+  summary:"Machines use sensors, mechanics, and software to sense, decide, and act in the real world.",
+  definition:"Robotics combines mechanical parts, sensors, control software, and sometimes AI. Robots can perform physical tasks, from repetitive factory work to assisting people in complex environments.",
+  analogy:"A machine body with sensors as its senses and software as part of its decision-making system.",
+  example:"Warehouse robots move packages, exploration robots operate in dangerous environments, and assistive robots can help people with everyday tasks.",
+  benefits:"Can handle repetitive, precise, dangerous, or physically demanding work and support people.",
+  limits:"Robots can be expensive, struggle with unexpected environments, and need careful safety design.",
+  explain:"AI can make decisions in software; robotics lets computers sense and affect the physical world.",
+  chips:["Sensors","Movement","Automation"]}
+];
+
+const carousel=document.getElementById("carousel");
+const dotsEl=document.getElementById("dots");
+const leftPreview=document.getElementById("leftPreview");
+const rightPreview=document.getElementById("rightPreview");
+const overlay=document.getElementById("detailOverlay");
+let current=0, slides=[], dots=[], mouseX=0, mouseY=0, touchStartX=0;
+
+function makeSlide(t,i){
+ const s=document.createElement("article");
+ s.className="slide";
+ s.style.setProperty("--accent",t.color);
+ s.style.setProperty("--glow",t.color+"18");
+ s.innerHTML=`
+  <div class="slide-content">
+   <div class="slide-head"><div class="index">EMERGING TREND / ${String(i+1).padStart(2,"0")}</div>
+    <div class="iconbox">${t.icon}</div></div>
+   <div class="tag">${t.tag}</div>
+   <h2>${t.title}</h2>
+   <p class="summary">${t.summary}</p>
+  </div>
+  <div class="slide-bottom">
+   <div class="chiprow">${t.chips.map(c=>`<span class="chip">${c}</span>`).join("")}</div>
+   <div class="explore">OPEN TOPIC DETAILS <span>↗</span></div>
+  </div>`;
+ s.addEventListener("click",()=>{if(i===current)openDetail();else goTo(i);});
+ carousel.appendChild(s); slides.push(s);
+ const d=document.createElement("button");d.className="dot";d.setAttribute("aria-label","Go to "+t.title);
+ d.addEventListener("click",()=>goTo(i));dotsEl.appendChild(d);dots.push(d);
+}
+topics.forEach(makeSlide);
+
+function preview(el,t,side){
+ el.style.setProperty("--accent",t.color);
+ el.innerHTML=`<div class="mini-icon">${t.icon}</div><h3>${t.title}</h3><p>${t.summary}</p>`;
+ el.style.borderColor=t.color+"30";
+}
+function render(){
+ const n=topics.length;
+ slides.forEach((s,i)=>{
+  let offset=i-current;
+  if(offset>n/2)offset-=n;
+  if(offset< -n/2)offset+=n;
+  const abs=Math.abs(offset);
+  s.classList.toggle("active",offset===0);
+  s.style.zIndex=String(20-abs);
+  s.style.opacity=abs===0?"1":abs===1?".48":abs===2?".13":"0";
+  s.style.pointerEvents=abs<=1?"auto":"none";
+  s.style.filter=abs===0?"none":"brightness(.62) saturate(.7)";
+  s.style.transform=`translateX(${offset*83}%) translateZ(${-abs*240}px) rotateY(${offset*-28}deg) scale(${1-abs*.13})`;
+  if(abs>2)s.style.visibility="hidden";else s.style.visibility="visible";
+ });
+ dots.forEach((d,i)=>d.classList.toggle("active",i===current));
+ document.getElementById("progress").textContent=`${String(current+1).padStart(2,"0")} / ${String(n).padStart(2,"0")}`;
+ preview(leftPreview,topics[(current+n-1)%n],"left");
+ preview(rightPreview,topics[(current+1)%n],"right");
+}
+function goTo(index){
+ const n=topics.length;current=(index+n)%n;render();
+}
+function openDetail(){
+ const t=topics[current];
+ document.getElementById("dIcon").textContent=t.icon;
+ document.getElementById("dIcon").style.setProperty("--accent",t.color);
+ document.getElementById("dTag").textContent=t.tag;
+ document.getElementById("dTag").style.color=t.color;
+ document.getElementById("detailTitle").textContent=t.title;
+ document.getElementById("detailTitle").style.color=t.color;
+ document.querySelector("#detailOverlay .detail-card").style.setProperty("--topic-color",t.color);
+ document.getElementById("dDefinition").textContent=t.definition;
+ document.getElementById("dAnalogy").textContent=t.analogy;
+ document.getElementById("dExample").textContent=t.example;
+ document.getElementById("dBenefits").textContent=t.benefits;
+ document.getElementById("dLimits").textContent=t.limits;
+ document.getElementById("dExplain").textContent=t.explain;
+ document.getElementById("dCount").textContent=`TOPIC ${String(current+1).padStart(2,"0")} OF ${topics.length}`;
+  const demoArea = document.getElementById("demoArea");
+  demoArea.innerHTML = `
+    <div class="demo-heading">
+      <h3>◈ Interactive Technology Lab</h3>
+      <span class="demo-caption">Dedicated lab · opens in a new tab</span>
+    </div>
+    <div class="sim-panel">
+      <p>Explore this technology in a dedicated interactive lab with controls, live feedback, and a reset option. Each lab runs locally and clearly identifies simulated behaviour.</p>
+      <button class="demo-btn" id="launchTopicSimulation">Launch ${t.title} Lab ↗</button>
+    </div>`;
+  document.getElementById("launchTopicSimulation").addEventListener("click", () => {
+    window.open(`simulations/${t.id}.html`, "_blank", "noopener,noreferrer");
+  });
+  overlay.classList.add("open");
+  const detailCard = document.querySelector("#detailOverlay .detail-card");
+  detailCard.scrollTop = 0;
+  document.getElementById("closeDetail").focus({ preventScroll: true });
+}
+
+function buildDemo(id, selectedDemo=""){
+ const area=document.getElementById("demoArea");
+ const t=topics.find(x=>x.id===id);
+ if(!area||!t)return;
+ const demos={
+  agentic:[["mission","Mission planner"],["tools","Tool-use decisions"]],
+  generative:[["create","Prompt-to-creation"],["verify","Can you trust it?"]],
+  cyber:[["login","Login decisions"],["defense","Build a defense"]],
+  quantum:[["qubit","Qubit explorer"],["search","Search comparison"]],
+  robotics:[["nova","Meet Nova"],["navigate","Robot navigation"]]
+ };
+ const active=selectedDemo||demos[id][0][0];
+ area.innerHTML=`<div class="demo-heading"><h3>◈ Interactive simulation lab</h3><span class="demo-caption">Try it yourself · no external services</span></div>
+ <div class="demo-tabs">${demos[id].map(([key,label])=>`<button class="demo-tab ${key===active?"active":""}" data-demo="${key}">${label}</button>`).join("")}</div>
+ <div id="simulationContent"></div>`;
+ area.querySelectorAll("[data-demo]").forEach(b=>b.addEventListener("click",()=>buildDemo(id,b.dataset.demo)));
+ const content=document.getElementById("simulationContent");
+ if(active==="mission"){
+  content.innerHTML=`<div class="sim-panel"><h4>✧ Agentic AI mission planner</h4><p>Choose a goal. The agent will break it into steps, choose simulated tools, check its work, and report back.</p>
+  <div class="sim-row"><select class="sim-select" id="missionSelect"><option value="presentation">Prepare a class presentation</option><option value="trip">Plan a low-cost school trip</option><option value="research">Research a science question</option></select><button class="demo-btn" id="runMission">▶ Run mission</button></div>
+  <div class="agent-steps" id="missionSteps" style="margin-top:14px"></div><div class="sim-output" id="missionOutput">The agent is waiting for a goal.</div></div>`;
+  document.getElementById("runMission").onclick=()=>{const type=document.getElementById("missionSelect").value;const plans={
+   presentation:["Understand audience","Outline key points","Draft slide structure","Check facts and timing","Present a review checklist"],
+   trip:["Confirm group and date","Compare destinations","Estimate transport and entry costs","Check safety and accessibility","Return plan for teacher approval"],
+   research:["Clarify the question","Search trusted sources (simulated)","Compare evidence","Check contradictions","Summarise with source notes"]
+  };const steps=plans[type],box=document.getElementById("missionSteps"),out=document.getElementById("missionOutput");box.innerHTML=steps.map((x,i)=>`<span class="agent-step">${i+1} · ${x}</span>`).join("");const els=[...box.children];let i=0;const btn=document.getElementById("runMission");btn.disabled=true;out.textContent="Agent is planning…";const tick=()=>{if(i<els.length){els[i].classList.add("done");out.textContent="Step "+(i+1)+": "+steps[i]+". The agent checks this stage before continuing.";i++;setTimeout(tick,380)}else{out.textContent="Mission draft complete. A human should review the facts, costs, and any real-world action before approval.";btn.disabled=false}};tick()};
+ }
+ if(active==="tools"){
+  content.innerHTML=`<div class="sim-panel"><h4>🧰 Tool-use decisions</h4><p>An agent can use tools, but tool access should match the task. Pick a proposed action and decide whether the agent should do it automatically or ask first.</p><div class="sim-row"><select class="sim-select" id="toolSelect"><option value="search">Search public information</option><option value="email">Send an email to a teacher</option><option value="buy">Purchase a ticket</option><option value="delete">Delete a folder</option></select><button class="demo-btn" id="toolCheck">Check permission</button></div><div class="sim-output" id="toolOutput">Choose an action to evaluate its risk.</div></div>`;
+  document.getElementById("toolCheck").onclick=()=>{const v=document.getElementById("toolSelect").value;const msg={search:"LOWER RISK: read-only public search can usually run within defined limits. Still check source quality.",email:"EXTERNAL ACTION: prepare a draft, then ask the user to review and approve before sending.",buy:"FINANCIAL COMMITMENT: show the price and terms, then require explicit human approval.",delete:"DESTRUCTIVE ACTION: verify the exact target, check backups, and require confirmation. Do not silently delete."};document.getElementById("toolOutput").textContent=msg[v]};
+ }
+ if(active==="create"){
+  content.innerHTML=`<div class="sim-panel"><h4>✳ Prompt-to-creation studio</h4><p>Change the prompt to see how instructions shape a generated result. This is a local sample simulation, not a live AI model.</p><input class="demo-input" id="createPrompt" value="Create a tiny story about a robot who learns kindness" aria-label="Creation prompt"><div class="sim-row"><select class="sim-select" id="createType"><option value="story">Story</option><option value="explain">Simple explanation</option><option value="ideas">Creative ideas</option><option value="code">Code outline</option></select><button class="demo-btn" id="createBtn">Generate sample</button></div><div class="sim-output" id="createOutput">Your sample output will appear here.</div></div>`;
+  document.getElementById("createBtn").onclick=()=>{const p=document.getElementById("createPrompt").value.trim(),type=document.getElementById("createType").value;if(!p){document.getElementById("createOutput").textContent="Add a prompt first.";return}const lead={story:"Story draft",explain:"Simple explanation",ideas:"Idea list",code:"Code outline"}[type];document.getElementById("createOutput").textContent=`${lead} inspired by “${p}”:\n\n${type==="story"?"Nova the little robot thought every problem needed a clever answer. One day, it noticed a classmate sitting alone. Instead of calculating a solution, Nova listened, asked a kind question, and learned that helping begins with understanding.":type==="explain"?"Break the topic into a definition, a simple analogy, one real-world example, and one limitation. Use plain language and check factual claims.":type==="ideas"?"1. Make a hands-on demo. 2. Show a real-world use. 3. Let the audience make a choice. 4. Reveal one limitation or ethical question.":"1. Define the input and output. 2. Break the task into small functions. 3. Test normal and edge cases. 4. Explain that this is a plan, not executable code."}\n\nNotice: a different prompt or format changes the direction of the output. Review it before using it.`
+  };
+ }
+ if(active==="verify"){
+  content.innerHTML=`<div class="sim-panel"><h4>🔎 Can you trust this AI answer?</h4><p>AI-generated content can sound confident and still be wrong. Pick a claim and choose the best next step.</p><div class="sim-row"><select class="sim-select" id="claimSelect"><option value="source">“A study proves this new drink improves memory by 300%.”</option><option value="history">“The first computer was invented in 2015.”</option><option value="image">“This photo is definitely real because it looks realistic.”</option></select><select class="sim-select" id="verifySelect"><option value="check">Check reliable independent sources</option><option value="trust">Trust it if it sounds confident</option><option value="share">Share it immediately</option></select><button class="demo-btn" id="verifyBtn">Evaluate</button></div><div class="sim-output" id="verifyOutput">Choose a claim and a response.</div></div>`;
+  document.getElementById("verifyBtn").onclick=()=>{const v=document.getElementById("verifySelect").value;document.getElementById("verifyOutput").textContent=v==="check"?"BEST CHOICE: trace the original source, check the date and method, compare independent reputable sources, and look for context. For images, inspect provenance and corroborating evidence.":v==="trust"?"RISKY: confident wording is not evidence. Generative systems can produce plausible errors.":"RISKY: sharing before verification can spread misinformation. Pause and check first."};
+ }
+ if(active==="login"){
+  content.innerHTML=`<div class="sim-panel"><h4>⬡ Login decision simulator</h4><p>Evaluate each sign-in using the evidence available. A real system uses more signals than this teaching example.</p><div class="security-demo"><div class="security-case"><h4>Request A · Familiar device</h4><p>Correct password, registered device, and multi-factor authentication completed.</p><button class="demo-btn" data-login="a">Evaluate</button><div class="status" id="loginA" style="margin-top:12px">WAITING</div></div><div class="security-case"><h4>Request B · New device</h4><p>Password is correct, but the device is unfamiliar and the second factor is missing.</p><button class="demo-btn" data-login="b">Evaluate</button><div class="status" id="loginB" style="margin-top:12px">WAITING</div></div></div><div class="sim-output">Security lesson: a correct password alone is not always enough. Verify identity and apply access rules.</div></div>`;
+  content.querySelectorAll("[data-login]").forEach(b=>b.onclick=()=>{const ok=b.dataset.login==="a",el=document.getElementById(ok?"loginA":"loginB");el.textContent=ok?"✓ ALLOW WITH POLICY":"⛔ REQUIRE SECOND FACTOR";el.className="status "+(ok?"safe":"danger")});
+ }
+ if(active==="defense"){
+  content.innerHTML=`<div class="sim-panel"><h4>🛡️ Build a network defense</h4><p>Select protections for a small school network. This simplified model shows how layered controls reduce risk; it is not a real security assessment.</p><div class="security-demo"><label class="security-case"><input type="checkbox" class="defenseChoice" value="mfa"> Multi-factor authentication</label><label class="security-case"><input type="checkbox" class="defenseChoice" value="updates"> Security updates</label><label class="security-case"><input type="checkbox" class="defenseChoice" value="backup"> Offline backups</label><label class="security-case"><input type="checkbox" class="defenseChoice" value="training"> Phishing awareness</label></div><div class="sim-row"><button class="demo-btn" id="defenseCheck">Assess my defense</button></div><div class="sim-output" id="defenseOutput">Choose protections, then assess your defense.</div></div>`;
+  document.getElementById("defenseCheck").onclick=()=>{const n=content.querySelectorAll(".defenseChoice:checked").length;document.getElementById("defenseOutput").textContent=n===4?"Strong layered baseline: identity, patching, recovery, and people are all covered. Keep monitoring and testing.":n>=2?`You selected ${n} of 4 layers. Better than one control, but important gaps remain. Add identity protection, updates, backups, and user training.`:"Only "+n+" layer(s) selected. A single control can fail; use multiple independent protections."};
+ }
+ if(active==="qubit"){
+  content.innerHTML=`<div class="sim-panel"><h4>⎔ Qubit explorer</h4><p>Use a simplified state control and then measure it. The dot is a visual analogy, not a literal image of a qubit or a full Bloch sphere.</p><div class="quantum-wrap"><div class="qubit"><div class="qubit-ring"></div><div class="qubit-ring two"></div><div class="qubit-ball" id="qBall"></div></div><div><div class="quantum-gates"><button class="demo-btn" id="gateX">Apply X gate</button><button class="demo-btn" id="gateH">Apply H gate</button><button class="demo-btn" id="measureQ">Measure</button><button class="demo-btn" id="resetQ">Reset</button></div><div class="sim-output" id="qOutput">Start in state |0⟩. Try a gate, then measure.</div></div></div></div>`;
+  let state="zero",prob=0;const out=document.getElementById("qOutput"),ball=document.getElementById("qBall");document.getElementById("gateX").onclick=()=>{state=state==="zero"?"one":state==="one"?"zero":"super";prob=state==="super"?.5:state==="one"?1:0;ball.style.transform=`translate(${state==="one"?35:state==="super"?0:-35}px,${state==="super"?-30:0}px)`;out.textContent="X gate illustration: it flips |0⟩ and |1⟩. This demo tracks only a simplified state, not full quantum math."};document.getElementById("gateH").onclick=()=>{state="super";prob=.5;ball.style.transform="translate(0,-35px)";out.textContent="H gate illustration: from |0⟩, it creates an equal superposition in the ideal textbook model. Superposition is not simply a ball in two places."};document.getElementById("measureQ").onclick=()=>{const result=Math.random()<prob?"1":"0";state=result==="1"?"one":"zero";prob=result==="1"?1:0;ball.style.transform=`translate(${result==="1"?35:-35}px,0)`;out.textContent=`Measurement result in this run: ${result}. Quantum measurement returns a classical result; repeated outcomes follow the state's probabilities. This simplified random demo is not a quantum simulator.`};document.getElementById("resetQ").onclick=()=>{state="zero";prob=0;ball.style.transform="translate(-35px,0)";out.textContent="Reset to |0⟩. Apply a gate and measure again."};
+ }
+ if(active==="search"){
+  content.innerHTML=`<div class="sim-panel"><h4>🔬 Classical vs quantum search</h4><p>For an unstructured search with N possibilities, a classical approach may need about N checks in the worst case; Grover's quantum algorithm uses about √N oracle queries under suitable assumptions. This does not mean quantum computers speed up every task.</p><div class="sim-row"><label for="searchSize" class="demo-caption">Number of possibilities:</label><select class="sim-select" id="searchSize"><option value="100">100</option><option value="10000">10,000</option><option value="1000000">1,000,000</option></select><button class="demo-btn" id="compareSearch">Compare estimates</button></div><div class="sim-output" id="searchOutput">Choose a search size.</div></div>`;
+  document.getElementById("compareSearch").onclick=()=>{const n=Number(document.getElementById("searchSize").value);document.getElementById("searchOutput").textContent=`Illustrative query counts for N = ${n.toLocaleString()}: classical worst-case scale ≈ ${n.toLocaleString()} checks; Grover-style quantum query scale ≈ √N = ${Math.ceil(Math.sqrt(n)).toLocaleString()}. These are algorithmic query estimates, not wall-clock timings. Hardware noise, setup, and problem structure matter.`};
+ }
+ if(active==="nova"){
+  content.innerHTML=`<div class="sim-panel"><h4>🤖 Meet Nova, the classroom robot</h4><p>Click Nova or the button. The animation represents a robot responding to a command; real robots use sensors, control software, and motors.</p><div class="robot-stage"><div class="robot" id="robot" role="button" tabindex="0" aria-label="Click robot to greet"><div class="antenna"></div><div class="head"><span class="eye left"></span><span class="eye right"></span><span class="mouth"></span></div><div class="body"></div><div class="arm left"></div><div class="arm right"></div></div></div><div class="robot-message" id="robotMessage">Nova is waiting for a command.</div><div class="sim-row"><button class="demo-btn" id="robotGreet">👋 Greet the audience</button><button class="demo-btn" id="robotWave">Wave again</button></div><div class="sim-output">Sensors provide input, software selects an action, and motors move the robot. This is a visual mock-up, not a physical robot.</div></div>`;
+  const greet=()=>{const r=document.getElementById("robot");r.classList.remove("waving");void r.offsetWidth;r.classList.add("waving");document.getElementById("robotMessage").textContent="Hello! I'm Nova. I use sensors and software to interact with the world!";};document.getElementById("robot").onclick=greet;document.getElementById("robot").onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();greet()}};document.getElementById("robotGreet").onclick=greet;document.getElementById("robotWave").onclick=greet;
+ }
+ if(active==="navigate"){
+  content.innerHTML=`<div class="sim-panel"><h4>🧭 Robot navigation challenge</h4><p>Guide Nova from START to GOAL. Choose manual control or let the simple autonomous pathfinder find a route around obstacles.</p><div class="sim-row"><select class="sim-select" id="navMode"><option value="auto">Autonomous pathfinding</option><option value="manual">Manual step-by-step</option></select><button class="demo-btn" id="findPath">▶ Navigate</button><button class="demo-btn" id="navReset">Reset map</button></div><div class="grid-board" id="navGrid"></div><div class="sim-output" id="navOutput">Nova is at START. Press Navigate.</div></div>`;
+  const walls=[8,9,14,20,21,26,27,28,33],start=0,goal=35;let pos=start;
+  const draw=()=>{const grid=document.getElementById("navGrid");grid.innerHTML="";for(let i=0;i<36;i++){const c=document.createElement("div");c.className="grid-cell"+(walls.includes(i)?" wall":"")+(i===pos?" robot-here":"")+(i===goal?" goal":"");c.textContent=i===pos?"🤖":i===goal?"🏁":walls.includes(i)?"■":"";grid.appendChild(c)}};
+  const pathfind=()=>{const q=[[start]],seen=new Set([start]);while(q.length){const path=q.shift(),v=path[path.length-1];if(v===goal)return path;for(const nx of [v%6>0?v-1:-1,v%6<5?v+1:-1,v>=6?v-6:-1,v<30?v+6:-1])if(nx>=0&&!walls.includes(nx)&&!seen.has(nx)){seen.add(nx);q.push([...path,nx])}}return []};
+  draw();document.getElementById("findPath").onclick=()=>{const mode=document.getElementById("navMode").value,out=document.getElementById("navOutput"),btn=document.getElementById("findPath");if(mode==="manual"){const options=[pos%6<5?pos+1:-1,pos<30?pos+6:-1,pos%6>0?pos-1:-1,pos>=6?pos-6:-1].filter(x=>x>=0&&!walls.includes(x));if(options.length){pos=options[0];draw();out.textContent=pos===goal?"Goal reached! Manual control succeeded.":"Manual mode: Nova took one available safe step. Press again to continue."}else out.textContent="No safe next step available. Reset or use autonomous mode.";return}const path=pathfind();if(!path.length){out.textContent="No route found.";return}btn.disabled=true;let i=0;const move=()=>{pos=path[i];draw();out.textContent=`Autonomous mode: step ${i+1} of ${path.length}. The pathfinder avoids blocked cells.`;i++;if(i<path.length)setTimeout(move,260);else{out.textContent=`Goal reached in ${path.length-1} moves. The pathfinder searched for a safe route around obstacles.`;btn.disabled=false}};move()};
+  document.getElementById("navReset").onclick=()=>{pos=start;draw();document.getElementById("navOutput").textContent="Nova is back at START.";document.getElementById("findPath").disabled=false};
+ }
+}
+function closeDetail(){overlay.classList.remove("open");}
+document.getElementById("prev").addEventListener("click",()=>goTo(current-1));
+document.getElementById("next").addEventListener("click",()=>goTo(current+1));
+document.getElementById("closeDetail").addEventListener("click",closeDetail);
+overlay.addEventListener("click",e=>{if(e.target===overlay)closeDetail();});
+document.getElementById("reset").addEventListener("click",()=>{closeDetail();goTo(0);mouseX=mouseY=0;carousel.style.transform="rotateX(0deg) rotateY(0deg)";});
+document.getElementById("fullscreen").addEventListener("click",async()=>{
+ try{if(!document.fullscreenElement)await document.getElementById("app").requestFullscreen();else await document.exitFullscreen();}
+ catch(e){console.warn("Fullscreen is not available here.",e);}
+});
+document.addEventListener("keydown",e=>{
+ if(overlay.classList.contains("open")){
+  if(e.key==="Escape"){closeDetail();closeHub();}
+  if(e.key==="ArrowRight"){closeDetail();goTo(current+1);}
+  if(e.key==="ArrowLeft"){closeDetail();goTo(current-1);}
+  return;
+ }
+ if(e.key==="ArrowRight"||e.key===" "){e.preventDefault();goTo(current+1);}
+ if(e.key==="ArrowLeft"){e.preventDefault();goTo(current-1);}
+ if(e.key==="Enter")openDetail();
+ if(e.key==="Escape"){closeDetail();closeHub();}
+});
+document.getElementById("app").addEventListener("mousemove",e=>{
+ const r=document.getElementById("app").getBoundingClientRect();
+ mouseX=(e.clientX-r.left)/r.width-.5;
+ mouseY=(e.clientY-r.top)/r.height-.5;
+ if(!overlay.classList.contains("open")){
+  carousel.style.transform=`rotateX(${-mouseY*5}deg) rotateY(${mouseX*7}deg)`;
+ }
+});
+document.getElementById("app").addEventListener("mouseleave",()=>{
+ carousel.style.transform="rotateX(0deg) rotateY(0deg)";
+});
+document.getElementById("app").addEventListener("touchstart",e=>{touchStartX=e.changedTouches[0].screenX;},{passive:true});
+document.getElementById("app").addEventListener("touchend",e=>{
+ const delta=e.changedTouches[0].screenX-touchStartX;
+ if(Math.abs(delta)>55)goTo(current+(delta<0?1:-1));
+},{passive:true});
+
+const hub=document.getElementById("simulationHub");
+function openHub(){hub.classList.add("open");document.getElementById("closeHub").focus();}
+function closeHub(){hub.classList.remove("open");}
+document.getElementById("openSimulations").addEventListener("click",openHub);
+document.getElementById("closeHub").addEventListener("click",closeHub);
+hub.addEventListener("click",e=>{if(e.target===hub)closeHub();});
+document.getElementById("hubGrid").innerHTML=topics.map((t,i)=>`<button class="hub-item" data-topic="${t.id}" style="--hub-color:${t.color}"><div class="hub-icon">${t.icon}</div><h3>${t.title}</h3><p>${({
+ agentic:"Plan a mission, watch the steps, and decide when an agent needs permission.",
+ generative:"Create sample content from a prompt, then test how to verify AI claims.",
+ cyber:"Evaluate sign-ins and choose layered protections for a school network.",
+ quantum:"Explore a simplified qubit, measure an outcome, and compare search query scales.",
+ robotics:"Wake Nova, then guide a robot around obstacles with manual or autonomous control."
+})[t.id]}</p><div class="tag" style="color:${t.color};margin-top:15px">OPEN SIMULATIONS ↗</div></button>`).join("");
+document.querySelectorAll("[data-topic]").forEach(b=>b.addEventListener("click",()=>{
+  const topicId = b.dataset.topic;
+  closeHub();
+  window.open(`simulations/${topicId}.html`, "_blank", "noopener,noreferrer");
+}));
+
+render();
+</script>
+</body>
+</html>
