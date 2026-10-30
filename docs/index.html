@@ -74,6 +74,7 @@ h1 span{background:linear-gradient(100deg,#fff 5%,#b7d9ff 50%,#c0aaff);-webkit-b
  background:color-mix(in srgb,var(--accent) 8%,transparent);box-shadow:inset 0 1px rgba(255,255,255,.16),0 0 35px color-mix(in srgb,var(--accent) 10%,transparent)}
 .tag{margin-top:23px;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);font-weight:700}
 .slide h2{font-size:clamp(34px,5vw,64px);line-height:1.02;letter-spacing:-2.5px;margin:12px 0 16px;font-weight:650;max-width:760px}
+.slide.cyber-topic h2{text-wrap:balance}
 .summary{max-width:700px;color:#d3d9ec;font-size:clamp(14px,1.5vw,18px);line-height:1.75;margin:0}
 .slide-bottom{position:relative;z-index:1;display:flex;justify-content:space-between;align-items:flex-end;gap:20px;transform:translateZ(25px)}
 .chiprow{display:flex;gap:8px;flex-wrap:wrap}
@@ -275,15 +276,15 @@ const topics = [
   limits:"It can invent facts, reproduce bias, and raise privacy or copyright concerns. Generated content needs review.",
   explain:"It does not guarantee truth. It generates likely content based on learned patterns, so check important claims.",
   chips:["Creation","Language models","Creative tools"]},
- {id:"cyber",title:"Cybersecurity",icon:"⬡",color:"#ff91c9",tag:"PROTECTING OUR DIGITAL WORLD",
-  summary:"Defending devices, networks, accounts, and data against misuse and digital attacks.",
-  definition:"Cybersecurity uses technologies and practices to protect devices, networks, applications, and information. Modern approaches verify identity and access instead of automatically trusting a connection.",
-  analogy:"Like a building with identity checks, locked rooms, cameras, and alarms instead of one front door that stays open forever.",
-  example:"Multi-factor authentication asks for another proof of identity, such as a one-time code, in addition to a password.",
-  benefits:"Protects privacy, reduces fraud and disruption, and helps keep important services available.",
-  limits:"No system is perfectly secure. Weak passwords, social engineering, outdated software, and human mistakes remain risks.",
-  explain:"Cybersecurity is not just antivirus software. It combines people, processes, and technology to reduce digital risk.",
-  chips:["Privacy","Identity","Zero Trust"]},
+ {id:"cyber",title:"Cybersecurity in Agentic AI",icon:"⬡",color:"#ff91c9",tag:"WHEN AGENTS CROSS BOUNDARIES",
+  summary:"How AI agents use tools—and why their access needs limits.",
+  definition:"Agents can use tools to act on files, applications, and networks. Cybersecurity in agentic AI means controlling that access, checking actions, and keeping agents within the boundaries of their assigned task.",
+  analogy:"Like giving an assistant a keycard: the goal matters, but so does which doors the keycard can open.",
+  example:"Explore the Hugging Face incident in the interactive timeline: the challenge, hidden messages, internet access, and the response.",
+  benefits:"Limited permissions, isolation, monitoring, and human review help protect systems when agents take actions.",
+  limits:"A high task score does not show whether an agent respected boundaries. Tool access and the path taken need checking too.",
+  explain:"Follow what the agent did, which systems it could reach, and how its actions were evaluated—not just its final score.",
+  chips:["Tool access","Agent boundaries","Hugging Face"]},
  {id:"quantum",title:"Quantum Computing",icon:"⎔",color:"#c3a0ff",tag:"A DIFFERENT KIND OF COMPUTING",
   summary:"A different computing approach that may help solve certain specialised scientific problems.",
   definition:"Quantum computers use quantum states, including superposition and entanglement, to process information differently from classical computers. Researchers are exploring where this approach could offer an advantage.",
@@ -309,11 +310,11 @@ const dotsEl=document.getElementById("dots");
 const leftPreview=document.getElementById("leftPreview");
 const rightPreview=document.getElementById("rightPreview");
 const overlay=document.getElementById("detailOverlay");
-let current=0, slides=[], dots=[], mouseX=0, mouseY=0, touchStartX=0;
+let current=Math.max(0,topics.findIndex(t=>t.id===location.hash.slice(1))), slides=[], dots=[], mouseX=0, mouseY=0, touchStartX=0;
 
 function makeSlide(t,i){
  const s=document.createElement("article");
- s.className="slide";
+ s.className="slide"+(t.id==="cyber"?" cyber-topic":"");
  s.style.setProperty("--accent",t.color);
  s.style.setProperty("--glow",t.color+"18");
  s.innerHTML=`
@@ -361,8 +362,9 @@ function render(){
  preview(rightPreview,topics[(current+1)%n],"right");
 }
 function goTo(index){
- const n=topics.length;current=(index+n)%n;render();
+ const n=topics.length;current=(index+n)%n;history.replaceState(null,"","#"+topics[current].id);render();
 }
+window.addEventListener("hashchange",()=>{const index=topics.findIndex(t=>t.id===location.hash.slice(1));if(index>=0)goTo(index);});
 function openDetail(){
  const t=topics[current];
  document.getElementById("dIcon").textContent=t.icon;
@@ -515,7 +517,7 @@ hub.addEventListener("click",e=>{if(e.target===hub)closeHub();});
 document.getElementById("hubGrid").innerHTML=topics.map((t,i)=>`<button class="hub-item" data-topic="${t.id}" style="--hub-color:${t.color}"><div class="hub-icon">${t.icon}</div><h3>${t.title}</h3><p>${({
  agentic:"Plan a mission, watch the steps, and decide when an agent needs permission.",
  generative:"Create sample content from a prompt, then test how to verify AI claims.",
- cyber:"Evaluate sign-ins and choose layered protections for a school network.",
+ cyber:"Step through the Hugging Face incident: hidden messages, internet access, and agents crossing task boundaries.",
  quantum:"Explore a simplified qubit, measure an outcome, and compare search query scales.",
  robotics:"Wake Nova, then guide a robot around obstacles with manual or autonomous control."
 })[t.id]}</p><div class="tag" style="color:${t.color};margin-top:15px">OPEN SIMULATIONS ↗</div></button>`).join("");

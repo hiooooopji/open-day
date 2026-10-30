@@ -4,6 +4,7 @@ const $$ = (s, root = document) => [...root.querySelectorAll(s)];
 const mobileQuery = matchMedia('(max-width:600px)');
 const motionQuery = matchMedia('(prefers-reduced-motion:reduce)');
 const ids = ['agent', 'training', 'incident', 'quantum', 'robotics'];
+const incidentOnly = new URLSearchParams(location.search).get('topic') === 'incident';
 let slide = 0;
 let toastTimer;
 const escapeText = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -198,12 +199,13 @@ const notes=[
 function renderNotes(){const n=notes[slide];$('#notes-title').textContent=n.title;$('#notes-cue').textContent=`${n.time} · ${n.cue}`;$('#notes-content').innerHTML=n.paragraphs.map(p=>`<p>${p}</p>`).join('');}
 function pauseAll(){if(loopInterval)stopLoop();if(trainingInterval)stopPolicy();if(incidentTimer)stopIncident();FutureLabs.pause();}
 function setSlide(index,updateHash=true){
-  pauseAll();slide=Math.max(0,Math.min(ids.length-1,index));ids.forEach((id,i)=>{$('#'+id).hidden=i!==slide;});
+  pauseAll();slide=incidentOnly?ids.indexOf('incident'):Math.max(0,Math.min(ids.length-1,index));ids.forEach((id,i)=>{$('#'+id).hidden=i!==slide;});
+  $('#prev-slide').closest('nav').hidden=incidentOnly;
   $('#prev-slide').disabled=slide===0;
   const nextLabel=slide===ids.length-1?'Back to first topic':'Next topic';
   $('#next-slide').setAttribute('aria-label',nextLabel);$('#next-slide').title=nextLabel+' (→)';
   $('#slide-status').textContent=`Topic ${slide+1} of ${ids.length}: ${['The agent','The training','The incident','Quantum computing','Robotics'][slide]}`;
-  $('#back-topics').href='index.html#'+ids[slide];
+  $('#back-topics').href='index.html#'+(incidentOnly?'cyber':ids[slide]);
   document.title=notes[slide].title.slice(5)+' — Future / Lab';
   window.scrollTo({top:0,left:0,behavior:'instant'});
   if(updateHash)history.replaceState(null,'','#'+ids[slide]);renderNotes();
@@ -219,6 +221,9 @@ document.addEventListener('keydown',event=>{
   if(event.key==='Escape' && $('dialog[open]')){event.preventDefault();$('dialog[open]').close();return;}
   if(event.key==='Escape'){event.preventDefault();location.href=$('#back-topics').href;return;}
   if(event.ctrlKey||event.metaKey||event.altKey||$('dialog[open]')||event.target.closest('input,select,textarea,[contenteditable=true],#robot-grid'))return;
+  if(incidentOnly&&(event.key==='ArrowRight'||event.key==='ArrowLeft')){
+    event.preventDefault();stopIncident();incidentStep=Math.max(0,Math.min(events.length-1,incidentStep+(event.key==='ArrowRight'?1:-1)));renderIncident();return;
+  }
   if(event.key==='ArrowRight'){event.preventDefault();setSlide((slide+1)%ids.length);}
   if(event.key==='ArrowLeft'){event.preventDefault();setSlide(Math.max(0,slide-1));}
   if(event.key.toLowerCase()==='n'){event.preventDefault();renderNotes();openDialog('notes-dialog');}

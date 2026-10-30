@@ -14,3 +14,6 @@ for (const page of pages) {
   scripts.forEach((match, index) => new Script(match[1], { filename: `${page}:script-${index + 1}` }));
   console.log(`Syntax OK: ${page}`);
 }
+
+new Script(readFileSync(resolve(__dirname, '../docs/app.js'), 'utf8'), { filename: 'app.js' });
+console.log('Syntax OK: app.js');
