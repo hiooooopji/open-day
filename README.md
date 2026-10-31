@@ -32,6 +32,8 @@ The incident demo uses an interactive WebGL scene with an agent swarm, message t
 
 The Hidden messages stage animates a message passed through a shared directory: Agent A publishes it through the shared service, and Agent B reads it. A folder and moving note show the exchange directly in the scene.
 
+Use the Fullscreen button in the top-right corner or press F to toggle fullscreen. Escape exits fullscreen before returning to Topics.
+
 `docs/incident-3d.js` and `docs/incident-3d.css` contain this scene. The original SVG diagram remains available automatically when WebGL is unavailable. The scene is a conceptual reconstruction, not a literal infrastructure map. The other four labs retain their existing visuals.
 
 Three.js 0.180.0 is served locally from `docs/vendor/three/`; its MIT license is included there. The 3D view has no runtime CDN requests. `npm run check` also checks the scene module's syntax.

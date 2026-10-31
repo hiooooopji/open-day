@@ -218,11 +218,22 @@ $('#prev-slide').addEventListener('click',()=>setSlide(slide-1));
 $('#next-slide').addEventListener('click',()=>setSlide((slide+1)%ids.length));
 addEventListener('hashchange',()=>{const i=ids.indexOf(location.hash.slice(1));if(i>=0)setSlide(i,false);});
 async function fullscreen(){try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen();}catch{toast('Fullscreen is unavailable here. You can use your browser’s fullscreen control.');}}
+function syncFullscreenButton(){
+  const active=Boolean(document.fullscreenElement),button=$('#incident-fullscreen');
+  button.setAttribute('aria-pressed',String(active));
+  button.setAttribute('aria-label',active?'Exit fullscreen':'Enter fullscreen');
+  button.title=(active?'Exit fullscreen':'Enter fullscreen')+' (F)';
+  button.querySelector('span').textContent=active?'Exit fullscreen':'Fullscreen';
+}
+$('#incident-fullscreen').addEventListener('click',fullscreen);
+document.addEventListener('fullscreenchange',syncFullscreenButton);
+syncFullscreenButton();
 function openDialog(id){pauseAll();$('#'+id).showModal();}
 $$('[data-close]').forEach(button=>button.addEventListener('click',()=>$('#'+button.dataset.close).close()));
 $$('dialog').forEach(dialog=>dialog.addEventListener('click',event=>{if(event.target===dialog){const rect=dialog.getBoundingClientRect();if(event.clientX<rect.left||event.clientX>rect.right||event.clientY<rect.top||event.clientY>rect.bottom)dialog.close();}}));
 document.addEventListener('keydown',event=>{
   if(event.key==='Escape' && $('dialog[open]')){event.preventDefault();$('dialog[open]').close();return;}
+  if(event.key==='Escape' && document.fullscreenElement){event.preventDefault();fullscreen();return;}
   if(event.key==='Escape'){event.preventDefault();location.href=$('#back-topics').href;return;}
   if(event.ctrlKey||event.metaKey||event.altKey||$('dialog[open]')||event.target.closest('input,select,textarea,[contenteditable=true],#robot-grid'))return;
   if(incidentOnly&&(event.key==='ArrowRight'||event.key==='ArrowLeft')){

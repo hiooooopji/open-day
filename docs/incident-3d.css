@@ -1,4 +1,11 @@
 /* The incident is a full-screen, interactive 3D story. */
+.incident-fullscreen{position:fixed;top:15px;right:24px;z-index:25;display:inline-flex;align-items:center;gap:8px;min-height:38px;padding:8px 13px;border:0;border-radius:30px;background:#090c12d9;backdrop-filter:blur(12px);color:#9dadbe;font-size:13px}
+.incident-fullscreen:hover{color:#e6eef8;background:#18202f}
+.incident-fullscreen svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.incident-fullscreen .fullscreen-collapse,.incident-fullscreen[aria-pressed="true"] .fullscreen-expand{display:none}
+.incident-fullscreen[aria-pressed="true"] .fullscreen-collapse{display:block}
+@media(max-width:650px){.incident-fullscreen{top:12px;right:16px}body:has(#incident:not([hidden])) .back-topics{left:16px;transform:none}}
+@media print{.incident-fullscreen{display:none}}
 .incident-slide{background:radial-gradient(ellipse at 18% 34%,#15354250,transparent 52%),radial-gradient(ellipse at 84% 55%,#45244045,transparent 52%),#080c14;padding-top:64px!important;grid-template-rows:auto minmax(0,1fr) auto!important;gap:20px!important}
 .incident-slide .slide-heading h1{font-size:clamp(32px,3.7vw,62px)}
 .incident-slide .slide-heading p{color:#91a5b9;font-size:13px;line-height:1.7}
