@@ -205,6 +205,7 @@ function pauseAll(){if(loopInterval)stopLoop();if(trainingInterval)stopPolicy();
 function setSlide(index,updateHash=true){
   pauseAll();slide=incidentOnly?ids.indexOf('incident'):Math.max(0,Math.min(ids.length-1,index));ids.forEach((id,i)=>{$('#'+id).hidden=i!==slide;});
   $('#prev-slide').closest('nav').hidden=incidentOnly;
+  $('#incident-fullscreen').hidden=ids[slide]!=='incident';
   $('#prev-slide').disabled=slide===0;
   const nextLabel=slide===ids.length-1?'Back to first topic':'Next topic';
   $('#next-slide').setAttribute('aria-label',nextLabel);$('#next-slide').title=nextLabel+' (→)';
